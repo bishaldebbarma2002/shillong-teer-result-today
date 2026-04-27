@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shillong Teer Result Today - Live Updates</title>
+    
+    <meta name="description" content="Get the fastest Shillong Teer Live Results. View 1st Round, 2nd Round, Common Numbers, and 7-day previous result history. Updated daily.">
+    <meta name="keywords" content="Shillong Teer, Shillong Teer Result, Common Numbers, Teer Guti, Meghalaya Teer">
+
+    <style>
+        :root {
+            --glass: rgba(255, 255, 255, 0.95);
+            --primary: #1a2a6c;
+            --fr-color: #3498db;
+            --sr-color: #27ae60;
+            --accent: #e74c3c;
+            --text: #2c3e50;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Inter', -apple-system, sans-serif;
+            margin: 0; padding: 15px; color: var(--text); min-height: 100vh;
+        }
+
+        .wrapper { max-width: 480px; margin: 0 auto; }
+        header { text-align: center; padding: 15px 0; }
+
+        .live-badge {
+            display: inline-flex; align-items: center; background: #fff;
+            padding: 5px 12px; border-radius: 50px; font-weight: 700;
+            font-size: 0.7rem; color: var(--accent); box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            text-transform: uppercase;
+        }
+
+        .dot {
+            height: 8px; width: 8px; background: var(--accent);
+            border-radius: 50%; margin-right: 6px; animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+
+        h1 { font-size: 1.5rem; margin: 8px 0; color: var(--primary); }
+
+        .video-box {
+            margin: 15px 0; border-radius: 15px; overflow: hidden;
+            background: #000; aspect-ratio: 16 / 9; display: flex;
+            align-items: center; justify-content: center; color: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .card {
+            background: var(--glass); border-radius: 24px; padding: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1); margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .result-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
+        .box { padding: 20px 10px; border-radius: 20px; background: #fff; border: 2px solid #eee; }
+        .fr-box { border-color: var(--fr-color); }
+        .sr-box { border-color: var(--sr-color); }
+
+        .label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; opacity: 0.7; }
+        .number { font-size: 2.8rem; font-weight: 900; }
+        .fr-box .number { color: var(--fr-color); }
+        .sr-box .number { color: var(--sr-color); }
+
+        .common-wrap { background: #fffbe6; border: 1px solid #ffe58f; padding: 15px; border-radius: 15px; }
+        
+        .btn {
+            width: 100%; padding: 16px; border: none; border-radius: 15px;
+            background: var(--primary); color: white; font-weight: 700;
+            cursor: pointer; margin-top: 15px;
+        }
+
+        .history-table { width: 100%; background: #fff; border-radius: 20px; overflow: hidden; margin-top: 15px; border-collapse: collapse; }
+        .history-table th { background: var(--primary); color: white; padding: 12px; font-size: 0.75rem; }
+        .history-table td { padding: 12px; text-align: center; border-bottom: 1px solid #f1f1f1; font-weight: 700; font-size: 0.9rem; }
+
+        .seo-text { font-size: 0.85rem; color: #576574; line-height: 1.6; margin-top: 25px; padding: 20px; background: #fff; border-radius: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <header>
+        <div class="live-badge"><span class="dot"></span> Live Updates</div>
+        <h1>Shillong Teer Result</h1>
+        <div id="todayDate" style="font-weight: 800; font-size: 1.1rem; color: var(--primary);">--</div>
+        
+        <div id="video-container" class="video-box">
+            <div id="live-soon-msg">🔴 LIVE STREAM SOON <br> (4:00 PM & 5:00 PM)</div>
+        </div>
+    </header>
+
+    <main class="card">
+        <div class="result-row">
+            <div class="box fr-box">
+                <div class="label">1st Round</div>
+                <div class="number" id="fr">--</div>
+            </div>
+            <div class="box sr-box">
+                <div class="label">2nd Round</div>
+                <div class="number" id="sr">--</div>
+            </div>
+        </div>
+
+        <div class="common-wrap">
+            <div class="label" style="color: #856404;">🎯 Common Numbers</div>
+            <div id="commonNums" style="font-size: 1.1rem; font-weight: 800; color: #856404;">--</div>
+        </div>
+
+        <button class="btn" onclick="loadData()">REFRESH RESULTS</button>
+        <p id="status" style="font-size: 0.65rem; margin-top:10px; color: var(--sr-color); opacity: 0.7;">Initial Loading...</p>
+    </main>
+
+    <section>
+        <h2 style="font-size: 1.1rem; color: var(--primary); margin: 20px 5px 10px;">Previous Results History</h2>
+        <table class="history-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>F/R</th>
+                    <th>S/R</th>
+                </tr>
+            </thead>
+            <tbody id="historyBody"></tbody>
+        </table>
+    </section>
+
+    <section class="seo-text">
+        <h2 style="font-size: 1.1rem; color: var(--primary);">Shillong Teer Game Rules</h2>
+        <p>The <b>Shillong Teer</b> is a unique archery-based lottery held in Meghalaya. It is played by choosing numbers from <b>00 to 99</b>. Results are declared daily except on <b>Sundays</b>.</p>
+    </section>
+</div>
+
+<script>
+    function getTodayString() {
+        const now = new Date();
+        const day = String(now.getDate()).padStart(2, '0');
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const year = now.getFullYear();
+        return `${day}-${month}-${year}`;
+    }
+
+    async function loadData() {
+        try {
+            const res = await fetch("result.json?t=" + Date.now());
+            const data = await res.json();
+            
+            const realTodayDate = getTodayString();
+            const isSunday = new Date().getDay() === 0;
+
+            // UI Elements
+            let displayFR = "--";
+            let displaySR = "--";
+            let displayCommon = isSunday ? "📌 Sunday: Holiday" : "🎯 Coming Soon...";
+            let historyArray = data.history ? [...data.history] : [];
+
+            // Logic to check if JSON matches Today
+            const jsonDate = data.today.date || "";
+
+            if (jsonDate === realTodayDate) {
+                // If JSON is updated for today
+                displayFR = data.today.FR;
+                displaySR = data.today.SR;
+                displayCommon = data.today.common;
+            } else if (jsonDate !== "" && data.today.FR !== "--") {
+                // If it's a new day, add OLD results from today section to history top
+                const alreadyInHistory = historyArray.some(item => item.date === jsonDate);
+                if (!alreadyInHistory) {
+                    historyArray.unshift({
+                        date: jsonDate,
+                        fr: data.today.FR,
+                        sr: data.today.SR
+                    });
+                }
+            }
+
+            // Update UI
+            document.getElementById("todayDate").innerText = realTodayDate;
+            document.getElementById("fr").innerText = displayFR;
+            document.getElementById("sr").innerText = displaySR;
+            document.getElementById("commonNums").innerText = displayCommon;
+            document.title = `Shillong Teer Result Today - ${realTodayDate}`;
+
+            // Render 7 Days History
+            let historyHTML = "";
+            historyArray.slice(0, 7).forEach(row => {
+                if(row.date) {
+                    historyHTML += `<tr>
+                        <td>${row.date}</td>
+                        <td style="color:var(--fr-color)">${row.fr}</td>
+                        <td style="color:var(--sr-color)">${row.sr}</td>
+                    </tr>`;
+                }
+            });
+            document.getElementById("historyBody").innerHTML = historyHTML;
+
+            document.getElementById("status").innerText = "Last Updated: " + new Date().toLocaleTimeString();
+
+        } catch (e) {
+            document.getElementById("status").innerText = "Connection Issue";
+            console.error(e);
+        }
+    }
+
+    function checkLiveStatus() {
+        const now = new Date();
+        const h = now.getHours();
+        const m = now.getMinutes();
+        const container = document.getElementById('video-container');
+        let isLiveSlot = (h === 16 && m < 30) || (h === 17 && m < 30);
+
+        if (isLiveSlot) {
+            if (!document.getElementById('youtube-player')) {
+                container.innerHTML = `<iframe id="youtube-player" width="100%" height="100%" src="https://www.youtube.com/embed/live_stream?channel=UC4_rK2gO-UaV-l7Iid7vV9A&autoplay=1&mute=1" frameborder="0" allowfullscreen></iframe>`;
+            }
+        } else {
+            container.innerHTML = `<div id="live-soon-msg">🔴 LIVE STREAM SOON <br> (4:00 PM & 5:00 PM)</div>`;
+        }
+    }
+
+    // Init
+    loadData();
+    checkLiveStatus();
+    setInterval(loadData, 30000); 
+    setInterval(checkLiveStatus, 60000);
+</script>
+</body>
+</html>
