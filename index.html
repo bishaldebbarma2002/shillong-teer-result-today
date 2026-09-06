@@ -3,183 +3,221 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>Enterprise Live Classroom</title>
+  <title>Classroom Pro Studio</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.5/peerjs.min.js"></script>
   <script src="https://www.youtube.com/iframe_api"></script>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+    
+    * {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      box-sizing: border-box;
+    }
     body { 
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: #0f1013;
-      color: #ffffff;
+      background-color: #090a0f;
+      color: #f3f4f6;
       height: 100dvh;
       width: 100vw;
       overflow: hidden;
     }
-    ::-webkit-scrollbar { width: 5px; height: 5px; }
-    ::-webkit-scrollbar-track { background: #121316; }
-    ::-webkit-scrollbar-thumb { background: #2c2d32; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #3f4046; }
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: #0f1117; }
+    ::-webkit-scrollbar-thumb { background: #262936; border-radius: 99px; }
+    ::-webkit-scrollbar-thumb:hover { background: #3b3f54; }
     .no-select { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
 
-    /* Responsive iPad & Mobile layout setup */
-    @media (max-width: 1024px) {
-      .app-layout { flex-direction: column !important; }
-      .stage-container { height: 38vh !important; min-height: 220px; max-height: 45vh; }
-      .panel-container { height: calc(62vh - 3.5rem) !important; width: 100% !important; flex: 1; }
-    }
-
-    @media (min-width: 1025px) {
-      .stage-container { height: 100% !important; }
-      .panel-container { height: 100% !important; width: 340px !important; }
-    }
-
-    /* Video Masking to hide YouTube Logos & Watch links */
-    .yt-mask-overlay {
+    /* YouTube Masking Engine */
+    .yt-mask-layer {
       position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: transparent;
+      inset: 0;
       z-index: 15;
       pointer-events: auto;
+      background: transparent;
+    }
+    
+    /* Auto-Hide Cover to remove initial YT branding/title overlays */
+    #yt-cover-overlay {
+      position: absolute;
+      inset: 0;
+      background-color: #000000;
+      z-index: 25;
+      transition: opacity 0.6s ease-in-out;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Layout responsive hooks */
+    @media (max-width: 1024px) {
+      .app-main-layout { flex-direction: column !important; }
+      .stage-box { height: 40vh !important; min-height: 230px; }
+      .panel-box { height: calc(60vh - 3.5rem) !important; width: 100% !important; }
+    }
+
+    /* Fullscreen Drawer Overlay */
+    #fullscreen-chat-drawer {
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    #fullscreen-chat-drawer.translate-x-full {
+      transform: translateX(100%);
     }
   </style>
 </head>
 <body class="h-[100dvh] w-screen flex flex-col justify-between overflow-hidden antialiased no-select">
 
-  <!-- TOP BAR NAVIGATION -->
-  <header id="top-bar" class="hidden h-14 px-3 sm:px-6 border-b border-[#232429] flex justify-between items-center z-20 shrink-0 bg-[#16171b]">
+  <header id="top-bar" class="hidden h-14 px-4 border-b border-[#1f222e] justify-between items-center z-20 shrink-0 bg-[#0f1117]/90 backdrop-blur-md">
     <div class="flex items-center gap-2 sm:gap-3">
-      <span class="material-icons text-indigo-400 text-lg sm:text-xl">workspace_premium</span>
-      <span id="active-room-id" class="text-xs sm:text-sm font-semibold tracking-wide text-gray-200">------</span>
-      <button onclick="copyRoomCode()" class="text-gray-400 hover:text-white p-1 rounded-full transition" title="Copy Class ID">
-        <span class="material-icons text-sm">content_copy</span>
-      </button>
-      <span id="role-badge" class="ml-1 text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30">
+      <div class="w-8 h-8 rounded-xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center">
+        <span class="material-icons text-indigo-400 text-lg">school</span>
+      </div>
+      <div>
+        <div class="flex items-center gap-1.5">
+          <span id="active-room-id" class="text-xs sm:text-sm font-bold tracking-wider text-gray-100">------</span>
+          <button onclick="copyRoomCode()" class="text-gray-400 hover:text-white p-1 rounded-lg hover:bg-[#1a1d28] transition" title="Copy Class ID">
+            <span class="material-icons text-xs">content_copy</span>
+          </button>
+        </div>
+      </div>
+      <span id="role-badge" class="ml-2 text-[10px] font-bold tracking-wider uppercase px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20">
         Student
       </span>
     </div>
 
-    <div class="flex items-center gap-2 sm:gap-3">
-      <!-- HOST LIVE HAND RAISE NOTIFICATION BADGE -->
-      <div id="host-hand-alert" class="hidden text-xs bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2.5 py-0.5 rounded-full flex items-center gap-1.5 font-semibold animate-pulse">
+    <div class="flex items-center gap-2">
+      <div id="host-hand-alert" class="hidden text-xs bg-amber-500/10 text-amber-400 border border-amber-500/20 px-3 py-1 rounded-full flex items-center gap-1.5 font-semibold animate-pulse">
         <span class="material-icons text-xs">front_hand</span> 
-        <span id="host-hand-count">0</span> Raised Hand(s)
+        <span id="host-hand-count">0</span>
       </div>
 
-      <span id="hand-raised-badge" class="hidden text-xs bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2.5 py-0.5 rounded-full flex items-center gap-1 font-medium animate-pulse">
+      <span id="hand-raised-badge" class="hidden text-xs bg-amber-500/10 text-amber-400 border border-amber-500/20 px-3 py-1 rounded-full flex items-center gap-1 font-medium animate-pulse">
         <span class="material-icons text-xs">front_hand</span> Hand Raised
       </span>
 
-      <button onclick="toggleSidePanel('users')" class="flex items-center gap-1.5 bg-[#202126] hover:bg-[#2c2d33] border border-[#2c2d33] px-3 py-1 rounded-full transition">
+      <button onclick="toggleSidePanel('users')" class="flex items-center gap-1.5 bg-[#1a1d28] hover:bg-[#252938] border border-[#262936] px-3 py-1.5 rounded-xl transition text-xs font-semibold text-gray-300">
         <span class="material-icons text-gray-400 text-sm">groups</span>
-        <span id="user-count" class="text-xs font-semibold text-gray-200">1</span>
+        <span id="user-count">1</span>
       </button>
     </div>
   </header>
 
-  <!-- LOBBY & CLASSROOM SETUP SCREEN -->
-  <main id="lobby-card" class="m-auto max-w-lg w-[92%] bg-[#16171b] p-5 sm:p-8 rounded-2xl border border-[#232429] shadow-2xl text-center space-y-5 my-auto">
-    <div class="flex justify-center items-center gap-2">
-      <span class="material-icons text-indigo-400 text-3xl">cast_for_education</span>
-      <h1 class="text-xl sm:text-2xl font-bold text-white tracking-tight">Enterprise Classroom</h1>
-    </div>
-    <p class="text-gray-400 text-xs">Direct Autoplay YouTube Stream + WebRTC Microphones</p>
-
-    <div class="text-left space-y-1">
-      <label class="block text-xs font-medium text-gray-300">Your Full Name <span class="text-red-400">*</span></label>
-      <input id="user-display-name" type="text" placeholder="e.g. Rahul Sharma" class="w-full bg-[#0f1013] border border-[#2c2d33] rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500" />
+  <main id="lobby-card" class="m-auto max-w-md w-[92%] bg-[#0f1117] p-6 sm:p-8 rounded-3xl border border-[#1f222e] shadow-2xl text-center space-y-6 my-auto">
+    <div class="flex flex-col items-center gap-2">
+      <div class="w-14 h-14 rounded-2xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
+        <span class="material-icons text-3xl">cast_for_education</span>
+      </div>
+      <h1 class="text-xl sm:text-2xl font-bold text-white">Live Classroom Studio</h1>
+      <p class="text-gray-400 text-xs max-w-xs">Clean stream broadcast without YouTube distractions</p>
     </div>
 
-    <!-- HOST DASHBOARD -->
-    <div class="space-y-3 pt-1">
-      <div class="bg-[#0f1013] border border-[#232429] p-4 rounded-xl text-left space-y-3">
-        <label class="block text-xs font-semibold text-indigo-400 uppercase tracking-wider">Host Broadcast Settings</label>
+    <div class="text-left space-y-1.5">
+      <label class="block text-xs font-semibold text-gray-300">Your Display Name <span class="text-indigo-400">*</span></label>
+      <input id="user-display-name" type="text" placeholder="e.g. Rahul Sharma" class="w-full bg-[#090a0f] border border-[#262936] rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-indigo-500 transition" />
+    </div>
+
+    <div class="space-y-4">
+      <div class="bg-[#141722] border border-[#1f222e] p-4 rounded-2xl text-left space-y-3">
+        <span class="block text-[11px] font-bold text-indigo-400 uppercase tracking-wider">Host Broadcast Panel</span>
         
         <div>
-          <label class="block text-[11px] text-gray-400 mb-1">YouTube Live Video Link or ID</label>
-          <input id="yt-stream-url" type="text" placeholder="e.g. https://www.youtube.com/watch?v=dQw4w9WgXcQ or dQw4w9WgXcQ" class="w-full bg-[#16171b] border border-[#2c2d33] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500" />
+          <label class="block text-[10px] text-gray-400 mb-1">YouTube Live Video Link or ID</label>
+          <input id="yt-stream-url" type="text" placeholder="https://www.youtube.com/watch?v=..." class="w-full bg-[#090a0f] border border-[#262936] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500" />
         </div>
 
         <div class="flex gap-2">
-          <input id="host-secret-pin" type="password" placeholder="Host Pin Key" class="w-full bg-[#16171b] border border-[#2c2d33] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500" />
-          <button onclick="createRoom()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-4 py-2 rounded-lg transition text-xs whitespace-nowrap shadow-lg">
-            Host Class
+          <input id="host-secret-pin" type="password" placeholder="Host Pin" class="w-full bg-[#090a0f] border border-[#262936] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500" />
+          <button onclick="createRoom()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-4 py-2 rounded-lg transition text-xs shrink-0 shadow-lg shadow-indigo-600/20">
+            Start Host
           </button>
         </div>
       </div>
 
-      <div class="flex items-center my-3">
-        <div class="flex-grow border-t border-[#232429]"></div>
-        <span class="px-3 text-gray-500 text-xs uppercase font-medium">Or Join As Student</span>
-        <div class="flex-grow border-t border-[#232429]"></div>
+      <div class="flex items-center my-2">
+        <div class="flex-grow border-t border-[#1f222e]"></div>
+        <span class="px-3 text-gray-500 text-[10px] uppercase font-bold tracking-wider">Or Student Join</span>
+        <div class="flex-grow border-t border-[#1f222e]"></div>
       </div>
 
-      <!-- STUDENT JOIN SECTION -->
       <div class="flex gap-2">
-        <input id="room-input" type="text" maxlength="6" placeholder="6-Digit Code" class="w-full bg-[#0f1013] border border-[#2c2d33] rounded-xl px-4 py-2 text-center text-sm tracking-widest focus:outline-none focus:border-indigo-500 text-white uppercase" />
-        <button onclick="joinRoom()" class="bg-[#202126] hover:bg-[#2c2d33] border border-[#2c2d33] text-indigo-400 font-semibold px-6 rounded-xl text-sm transition">
-          Join
+        <input id="room-input" type="text" maxlength="6" placeholder="6-Digit Class Code" class="w-full bg-[#090a0f] border border-[#262936] rounded-xl px-4 py-2.5 text-center text-xs font-semibold tracking-widest focus:outline-none focus:border-indigo-500 text-white uppercase" />
+        <button onclick="joinRoom()" class="bg-[#1a1d28] hover:bg-[#252938] border border-[#262936] text-indigo-400 font-semibold px-6 rounded-xl text-xs transition shrink-0">
+          Join Class
         </button>
       </div>
     </div>
   </main>
 
-  <!-- MAIN BROADCAST STAGE -->
-  <main id="room-stage" class="hidden flex-1 app-layout relative p-1.5 sm:p-3 flex flex-col lg:flex-row gap-2.5 overflow-hidden h-full min-h-0">
+  <main id="room-stage" class="hidden flex-1 app-main-layout relative p-2 sm:p-3 flex flex-col lg:flex-row gap-3 overflow-hidden h-full min-h-0">
     
-    <div id="stage-wrapper" class="stage-container relative flex flex-col justify-center items-center w-full overflow-hidden bg-[#0a0b0d] rounded-2xl border border-[#232429]">
+    <div id="stage-wrapper" class="stage-box relative flex flex-col justify-center items-center w-full overflow-hidden bg-black rounded-2xl border border-[#1f222e]">
       
-      <div id="video-grid" class="w-full h-full relative flex items-center justify-center p-0">
-        <!-- Direct Autoplay Player Frame with Scale & Protection Layer -->
+      <div id="video-grid" class="w-full h-full relative flex items-center justify-center overflow-hidden">
         <div id="yt-player-wrapper" class="relative w-full h-full bg-black overflow-hidden flex items-center justify-center">
-          <div id="yt-iframe-container" class="w-full h-full relative pointer-events-none scale-125 origin-center">
+          
+          <div id="yt-cover-overlay">
+            <div class="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin mb-2"></div>
+            <p class="text-xs text-gray-400 font-medium">Connecting to secure stream...</p>
+          </div>
+
+          <div id="yt-iframe-container" class="w-full h-full relative pointer-events-none scale-[1.35] origin-center">
             <div id="yt-player"></div>
           </div>
-          <!-- Masking layer disables youtube title clicks, branding & popup links -->
-          <div class="yt-mask-overlay"></div>
+          
+          <div class="yt-mask-layer"></div>
         </div>
       </div>
 
-      <div class="absolute top-3 left-3 bg-red-600/90 text-white text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1.5 shadow-lg z-20 backdrop-blur">
-        <span class="w-2 h-2 rounded-full bg-white animate-ping"></span> LIVE BROADCAST
+      <div class="absolute top-3 left-3 bg-red-600/90 text-white text-[10px] font-bold px-3 py-1 rounded-full flex items-center gap-1.5 shadow-lg z-20 backdrop-blur-md">
+        <span class="w-2 h-2 rounded-full bg-white animate-ping"></span> LIVE
       </div>
 
-      <!-- UNMUTE ACTION OVERLAY FOR MOBILE / IOS -->
-      <button id="ios-unmute-btn" onclick="unmuteAudioIOS()" class="hidden absolute z-30 bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-full text-xs font-semibold backdrop-blur shadow-2xl flex items-center gap-2 animate-bounce">
+      <button id="ios-unmute-btn" onclick="unmuteAudioIOS()" class="hidden absolute z-30 bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2.5 rounded-full text-xs font-semibold backdrop-blur-md shadow-2xl flex items-center gap-2 animate-bounce">
         <span class="material-icons text-sm">volume_up</span> Tap to Enable Live Audio
       </button>
 
-      <button onclick="toggleFullScreenStage()" class="absolute top-3 right-3 bg-black/60 hover:bg-black/80 text-white p-2 rounded-full backdrop-blur transition z-20" title="Fullscreen">
+      <button onclick="toggleFullScreenStage()" class="absolute top-3 right-3 bg-black/60 hover:bg-black/80 text-white p-2 rounded-full backdrop-blur-md transition z-20" title="Fullscreen">
         <span class="material-icons text-sm">fullscreen</span>
       </button>
 
-      <!-- FULLSCREEN OVERLAY FLOATING CHAT BUTTON -->
       <button id="fullscreen-chat-toggle" onclick="toggleOverlayChatPanel()" class="hidden absolute bottom-4 right-4 bg-indigo-600 hover:bg-indigo-500 text-white p-3 rounded-full shadow-2xl z-40 flex items-center gap-2 text-xs font-bold transition">
-        <span class="material-icons text-sm">chat</span> Chat
+        <span class="material-icons text-base">chat</span>
       </button>
 
-      <!-- FLOATING REACTION CANVAS CONTAINER -->
       <div id="reaction-canvas" class="absolute inset-0 pointer-events-none z-30 overflow-hidden"></div>
+
+      <div id="fullscreen-chat-drawer" class="hidden absolute inset-y-0 right-0 w-80 bg-[#0f1117]/95 backdrop-blur-xl border-l border-[#1f222e] z-50 flex flex-col justify-between p-3 translate-x-full shadow-2xl">
+        <div class="flex items-center justify-between pb-2 border-b border-[#1f222e]">
+          <span class="text-xs font-bold text-gray-200">Live Chat</span>
+          <button onclick="toggleOverlayChatPanel()" class="text-gray-400 hover:text-white p-1">
+            <span class="material-icons text-sm">close</span>
+          </button>
+        </div>
+        <div id="drawer-chat-messages" class="flex-1 overflow-y-auto space-y-2 my-2 text-xs"></div>
+        <form onsubmit="sendChatMessage(event, 'drawer-chat-input')" class="flex gap-2">
+          <input id="drawer-chat-input" type="text" autocomplete="off" placeholder="Ask a question..." class="flex-1 bg-[#090a0f] border border-[#262936] focus:border-indigo-500 focus:outline-none rounded-xl px-3 py-2 text-xs text-white" />
+          <button type="submit" class="p-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl">
+            <span class="material-icons text-sm">send</span>
+          </button>
+        </form>
+      </div>
 
     </div>
 
-    <!-- SIDE PANEL (YouTube Style Bottom Panel for Mobile / Sidebar for Desktop) -->
-    <aside id="side-panel" class="panel-container w-full lg:w-80 bg-[#16171b] border border-[#232429] rounded-2xl flex flex-col justify-between shadow-2xl z-30 relative overflow-hidden">
+    <aside id="side-panel" class="panel-box w-full lg:w-80 bg-[#0f1117] border border-[#1f222e] rounded-2xl flex flex-col justify-between shadow-2xl z-30 relative overflow-hidden">
       
-      <div class="p-2 sm:p-3 border-b border-[#232429] flex justify-between items-center bg-[#121316] rounded-t-2xl shrink-0">
-        <div class="flex gap-1 bg-[#0f1013] p-1 rounded-xl border border-[#232429] w-full justify-around">
-          <button id="tab-chat-btn" onclick="switchSideTab('chat')" class="flex-1 py-1 text-xs rounded-lg bg-indigo-600 text-white font-medium transition">Chat</button>
-          <button id="tab-polls-btn" onclick="switchSideTab('polls')" class="flex-1 py-1 text-xs rounded-lg text-gray-400 hover:text-white font-medium transition">Polls</button>
-          <button id="tab-users-btn" onclick="switchSideTab('users')" class="flex-1 py-1 text-xs rounded-lg text-gray-400 hover:text-white font-medium transition">Students</button>
+      <div class="p-2 border-b border-[#1f222e] bg-[#141722] shrink-0">
+        <div class="flex gap-1 bg-[#090a0f] p-1 rounded-xl border border-[#1f222e]">
+          <button id="tab-chat-btn" onclick="switchSideTab('chat')" class="flex-1 py-1.5 text-xs rounded-lg bg-indigo-600 text-white font-semibold transition">Chat</button>
+          <button id="tab-polls-btn" onclick="switchSideTab('polls')" class="flex-1 py-1.5 text-xs rounded-lg text-gray-400 hover:text-white font-semibold transition">Polls</button>
+          <button id="tab-users-btn" onclick="switchSideTab('users')" class="flex-1 py-1.5 text-xs rounded-lg text-gray-400 hover:text-white font-semibold transition">Roster</button>
         </div>
       </div>
 
-      <!-- CHAT SYSTEM & MODERATION -->
       <div id="chat-tab-content" class="flex-1 flex flex-col justify-between overflow-hidden relative">
         
-        <!-- PINNED CHAT BANNER INSIDE CHAT PANEL TOP -->
-        <div id="pinned-banner" class="hidden bg-indigo-950/90 border-b border-indigo-500/30 p-2.5 text-xs text-indigo-200 flex items-center justify-between shrink-0 backdrop-blur">
+        <div id="pinned-banner" class="hidden bg-indigo-950/80 border-b border-indigo-500/30 p-2.5 text-xs text-indigo-200 flex items-center justify-between shrink-0 backdrop-blur-md">
           <div class="flex items-center gap-2 overflow-hidden">
             <span class="material-icons text-amber-400 text-sm shrink-0">push_pin</span>
             <span id="pinned-banner-text" class="truncate font-medium">Pinned message...</span>
@@ -187,26 +225,24 @@
           <button id="unpin-btn" onclick="unpinMessage()" class="hidden text-amber-400 hover:text-amber-300 text-[10px] font-bold ml-2 underline shrink-0">UNPIN</button>
         </div>
 
-        <!-- TEACHER CHAT CONTROL BAR -->
-        <div id="host-chat-controls" class="hidden bg-[#121316] p-2 border-b border-[#232429] flex items-center justify-between text-[11px] shrink-0">
-          <button id="toggle-chat-enable-btn" onclick="toggleGlobalChatState()" class="px-2 py-1 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-semibold">
-            Chat: Enabled
+        <div id="host-chat-controls" class="hidden bg-[#141722] p-2 border-b border-[#1f222e] flex items-center justify-between text-[11px] shrink-0">
+          <button id="toggle-chat-enable-btn" onclick="toggleGlobalChatState()" class="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold">
+            Chat: Active
           </button>
 
-          <select id="chat-mode-select" onchange="changeChatMode(this.value)" class="bg-[#16171b] border border-[#2c2d33] text-gray-300 rounded px-1.5 py-0.5 focus:outline-none text-[11px]">
-            <option value="ALL">Mode: All Chat</option>
-            <option value="INDIVIDUAL">Mode: Host Only (Private)</option>
+          <select id="chat-mode-select" onchange="changeChatMode(this.value)" class="bg-[#090a0f] border border-[#262936] text-gray-300 rounded-lg px-2 py-1 focus:outline-none text-[11px]">
+            <option value="ALL">Public Chat</option>
+            <option value="INDIVIDUAL">Teacher Private</option>
           </select>
         </div>
 
         <div id="chat-messages" class="flex-1 p-3 overflow-y-auto space-y-2 text-xs flex flex-col">
-          <div id="chat-mode-indicator" class="bg-[#202126] p-2 rounded-lg text-gray-400 text-[10px] text-center border border-[#2c2d33]">
-            Live Classroom Chat Active
+          <div id="chat-mode-indicator" class="bg-[#141722] p-2 rounded-xl text-gray-400 text-[10px] text-center border border-[#1f222e]">
+            Public Classroom Chat Active
           </div>
         </div>
 
-        <!-- EMOJI QUICK REACTION BAR -->
-        <div class="px-3 py-1.5 bg-[#121316] border-t border-[#232429] flex justify-around items-center shrink-0">
+        <div class="px-3 py-1.5 bg-[#141722] border-t border-[#1f222e] flex justify-around items-center shrink-0">
           <button onclick="sendEmojiReaction('👍')" class="hover:scale-125 transition text-base">👍</button>
           <button onclick="sendEmojiReaction('❤️')" class="hover:scale-125 transition text-base">❤️</button>
           <button onclick="sendEmojiReaction('👏')" class="hover:scale-125 transition text-base">👏</button>
@@ -214,40 +250,38 @@
           <button onclick="sendEmojiReaction('🔥')" class="hover:scale-125 transition text-base">🔥</button>
         </div>
 
-        <div class="p-2.5 border-t border-[#232429] bg-[#121316] shrink-0">
-          <form id="chat-form" onsubmit="sendChatMessage(event)" class="flex gap-2">
-            <input id="chat-input" type="text" autocomplete="off" placeholder="Ask a question..." class="flex-1 bg-[#16171b] border border-[#2c2d33] focus:border-indigo-500 focus:outline-none rounded-xl px-3 py-2 text-xs text-white" />
-            <button id="send-chat-btn" type="submit" class="p-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl flex items-center justify-center shrink-0">
+        <div class="p-2.5 border-t border-[#1f222e] bg-[#141722] shrink-0">
+          <form id="chat-form" onsubmit="sendChatMessage(event, 'chat-input')" class="flex gap-2">
+            <input id="chat-input" type="text" autocomplete="off" placeholder="Ask a question..." class="flex-1 bg-[#090a0f] border border-[#262936] focus:border-indigo-500 focus:outline-none rounded-xl px-3 py-2 text-xs text-white" />
+            <button id="send-chat-btn" type="submit" class="p-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-indigo-600/20">
               <span class="material-icons text-sm">send</span>
             </button>
           </form>
         </div>
       </div>
 
-      <!-- PARTICIPANTS LIST -->
       <div id="users-tab-content" class="hidden flex-1 p-3 overflow-y-auto space-y-2 text-xs">
-        <div id="participant-notice" class="text-[11px] text-gray-400 mb-2"></div>
+        <div id="participant-notice" class="text-[11px] text-gray-400 mb-2 font-medium"></div>
         <div id="participant-list" class="space-y-1.5"></div>
       </div>
 
-      <!-- POLLS TAB (2-4 OPTIONS SUPPORT) -->
       <div id="polls-tab-content" class="hidden flex-1 p-3 overflow-y-auto space-y-3 text-xs">
-        <div id="host-poll-creator" class="hidden bg-[#121316] border border-[#232429] p-3 rounded-xl space-y-2">
-          <span class="block font-semibold text-indigo-400">Create Live Poll (2-4 Options)</span>
-          <input id="poll-question" type="text" placeholder="Poll Question..." class="w-full bg-[#16171b] border border-[#2c2d33] rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500" />
-          <input id="poll-opt1" type="text" placeholder="Option 1 *" class="w-full bg-[#16171b] border border-[#2c2d33] rounded-lg px-2.5 py-1 text-xs text-white focus:outline-none focus:border-indigo-500" />
-          <input id="poll-opt2" type="text" placeholder="Option 2 *" class="w-full bg-[#16171b] border border-[#2c2d33] rounded-lg px-2.5 py-1 text-xs text-white focus:outline-none focus:border-indigo-500" />
-          <input id="poll-opt3" type="text" placeholder="Option 3 (Optional)" class="w-full bg-[#16171b] border border-[#2c2d33] rounded-lg px-2.5 py-1 text-xs text-white focus:outline-none focus:border-indigo-500" />
-          <input id="poll-opt4" type="text" placeholder="Option 4 (Optional)" class="w-full bg-[#16171b] border border-[#2c2d33] rounded-lg px-2.5 py-1 text-xs text-white focus:outline-none focus:border-indigo-500" />
+        <div id="host-poll-creator" class="hidden bg-[#141722] border border-[#1f222e] p-3 rounded-2xl space-y-2">
+          <span class="block font-bold text-indigo-400">Launch Live Poll</span>
+          <input id="poll-question" type="text" placeholder="Poll Question..." class="w-full bg-[#090a0f] border border-[#262936] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500" />
+          <input id="poll-opt1" type="text" placeholder="Option 1 *" class="w-full bg-[#090a0f] border border-[#262936] rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500" />
+          <input id="poll-opt2" type="text" placeholder="Option 2 *" class="w-full bg-[#090a0f] border border-[#262936] rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500" />
+          <input id="poll-opt3" type="text" placeholder="Option 3 (Optional)" class="w-full bg-[#090a0f] border border-[#262936] rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500" />
+          <input id="poll-opt4" type="text" placeholder="Option 4 (Optional)" class="w-full bg-[#090a0f] border border-[#262936] rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500" />
           
           <div class="flex gap-2 pt-1">
-            <button onclick="publishPoll()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-1.5 rounded-lg text-xs font-medium">Launch Poll</button>
-            <button id="delete-poll-btn" onclick="deletePoll()" class="hidden bg-red-600/20 text-red-300 hover:bg-red-600/40 px-3 py-1.5 rounded-lg text-xs font-medium border border-red-500/30">Delete</button>
+            <button onclick="publishPoll()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-2 rounded-xl text-xs font-semibold shadow-lg shadow-indigo-600/20">Publish Poll</button>
+            <button id="delete-poll-btn" onclick="deletePoll()" class="hidden bg-red-500/10 text-red-400 hover:bg-red-500/20 px-3 py-2 rounded-xl text-xs font-semibold border border-red-500/20">Delete</button>
           </div>
         </div>
 
-        <div id="active-poll-card" class="bg-[#121316] border border-[#232429] p-3 rounded-xl space-y-3">
-          <p class="text-gray-400 text-center italic">No active poll currently running.</p>
+        <div id="active-poll-card" class="bg-[#141722] border border-[#1f222e] p-3 rounded-2xl space-y-3">
+          <p class="text-gray-400 text-center italic">No active poll running.</p>
         </div>
       </div>
 
@@ -255,57 +289,56 @@
 
   </main>
 
-  <!-- CONTROLS DOCK -->
-  <footer id="controls" class="hidden h-16 px-4 sm:px-6 border-t border-[#232429] flex justify-between items-center z-20 shrink-0 bg-[#16171b]">
-    <div class="hidden sm:flex items-center gap-2 text-sm font-medium text-gray-400">
-      <span id="clock" class="text-xs">00:00</span>
+  <footer id="controls" class="hidden h-16 px-4 border-t border-[#1f222e] justify-between items-center z-20 shrink-0 bg-[#0f1117]">
+    <div class="hidden sm:flex items-center gap-2 text-xs font-medium text-gray-400">
+      <span id="clock" class="font-bold text-gray-200">00:00</span>
       <span class="text-gray-600">|</span>
-      <span id="dock-room-code" class="text-xs tracking-wide text-gray-300">------</span>
+      <span id="dock-room-code" class="tracking-wide text-gray-300">------</span>
     </div>
 
-    <div class="flex items-center gap-2 sm:gap-3 mx-auto sm:mx-0">
-      <button id="student-mic-btn" onclick="toggleStudentMic()" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#2c2d33] opacity-50 cursor-not-allowed flex items-center justify-center transition" disabled title="Host permission required">
-        <span class="material-icons text-white text-base sm:text-lg">mic_off</span>
+    <div class="flex items-center gap-3 mx-auto sm:mx-0">
+      <button id="student-mic-btn" onclick="toggleStudentMic()" class="w-11 h-11 rounded-2xl bg-[#1a1d28] border border-[#262936] opacity-50 cursor-not-allowed flex items-center justify-center transition" disabled title="Host permission required">
+        <span class="material-icons text-white text-lg">mic_off</span>
       </button>
 
-      <button id="hand-raise-btn" onclick="toggleHandRaise()" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#202126] hover:bg-[#2c2d33] border border-[#2c2d33] flex items-center justify-center transition text-amber-400" title="Raise Hand">
-        <span class="material-icons text-base sm:text-lg">front_hand</span>
+      <button id="hand-raise-btn" onclick="toggleHandRaise()" class="w-11 h-11 rounded-2xl bg-[#1a1d28] border border-[#262936] flex items-center justify-center transition text-amber-400" title="Raise Hand">
+        <span class="material-icons text-lg">front_hand</span>
       </button>
 
-      <button onclick="leaveClassroom()" class="w-12 h-10 sm:w-14 sm:h-11 rounded-full bg-red-600 hover:bg-red-500 flex items-center justify-center transition shadow-lg" title="Leave Class">
-        <span class="material-icons text-white text-base sm:text-lg">call_end</span>
+      <button onclick="leaveClassroom()" class="w-14 h-11 rounded-2xl bg-red-600 hover:bg-red-500 flex items-center justify-center transition shadow-lg shadow-red-600/20" title="Leave Class">
+        <span class="material-icons text-white text-lg">call_end</span>
       </button>
     </div>
 
     <div class="flex items-center gap-2">
-      <button onclick="toggleSidePanel('chat')" class="p-2.5 rounded-full hover:bg-[#202126] text-gray-300 transition" title="Live Chat">
-        <span class="material-icons text-base sm:text-lg">chat</span>
+      <button onclick="toggleSidePanel('chat')" class="p-2.5 rounded-2xl hover:bg-[#1a1d28] text-gray-300 transition" title="Live Chat">
+        <span class="material-icons text-lg">chat</span>
       </button>
     </div>
   </footer>
 
-  <!-- MIC PERMISSION MODAL -->
   <div id="mic-allowed-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
-    <div class="bg-[#16171b] border border-indigo-500/50 rounded-2xl p-6 max-w-sm w-full text-center space-y-4 shadow-2xl animate-bounce">
-      <div class="w-12 h-12 bg-emerald-500/20 border border-emerald-500/40 rounded-full flex items-center justify-center mx-auto text-emerald-400">
+    <div class="bg-[#0f1117] border border-indigo-500/30 rounded-3xl p-6 max-w-sm w-full text-center space-y-4 shadow-2xl">
+      <div class="w-12 h-12 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl flex items-center justify-center mx-auto text-emerald-400">
         <span class="material-icons text-2xl">mic</span>
       </div>
       <div>
-        <h3 class="text-base font-bold text-white">Microphone Granted</h3>
-        <p class="text-xs text-gray-300 mt-1">The host has allowed you to speak. You can now turn on your microphone.</p>
+        <h3 class="text-base font-bold text-white">Microphone Unlocked</h3>
+        <p class="text-xs text-gray-400 mt-1">The teacher has unmuted your microphone.</p>
       </div>
-      <button onclick="enableStudentMicNow()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2.5 rounded-xl text-xs transition shadow-lg">
+      <button onclick="enableStudentMicNow()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 rounded-xl text-xs transition shadow-lg shadow-emerald-600/20">
         Turn On Microphone
       </button>
     </div>
   </div>
 
-  <!-- CLASS ENDED OVERLAY -->
-  <div id="class-ended-overlay" class="hidden fixed inset-0 bg-[#0f1013] z-50 flex flex-col items-center justify-center p-6 text-center space-y-4">
-    <span class="material-icons text-indigo-400 text-6xl">school</span>
-    <h1 class="text-2xl sm:text-3xl font-bold text-white">Live Class Ended</h1>
-    <p class="text-gray-400 text-sm max-w-md">The teacher has concluded this live session. See you next time!</p>
-    <button onclick="location.reload()" class="mt-4 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-6 py-2.5 rounded-xl text-xs transition">
+  <div id="class-ended-overlay" class="hidden fixed inset-0 bg-[#090a0f] z-50 flex flex-col items-center justify-center p-6 text-center space-y-4">
+    <div class="w-16 h-16 rounded-3xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
+      <span class="material-icons text-3xl">school</span>
+    </div>
+    <h1 class="text-2xl font-bold text-white">Class Concluded</h1>
+    <p class="text-gray-400 text-xs max-w-xs">The teacher has concluded this live classroom session.</p>
+    <button onclick="location.reload()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-6 py-2.5 rounded-xl text-xs transition shadow-lg shadow-indigo-600/20">
       Return to Lobby
     </button>
   </div>
@@ -327,7 +360,6 @@
     let isStudentMicOn = false;
     let handRaiseTimer = null;
 
-    // Chat Settings State
     let isGlobalChatEnabled = true;
     let currentChatMode = "ALL"; 
 
@@ -349,10 +381,10 @@
     function showToast(msg, type = 'info') {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
-      toast.className = `p-3 rounded-xl border text-xs shadow-xl backdrop-blur transition-all duration-300 pointer-events-auto flex items-center justify-between gap-3 ${
-        type === 'error' ? 'bg-red-900/90 border-red-700 text-white' :
-        type === 'success' ? 'bg-emerald-900/90 border-emerald-700 text-white' :
-        'bg-[#202126] border-[#2c2d33] text-gray-200'
+      toast.className = `p-3 rounded-xl border text-xs shadow-2xl backdrop-blur-md transition-all duration-300 pointer-events-auto flex items-center justify-between gap-3 ${
+        type === 'error' ? 'bg-red-950/90 border-red-800 text-red-200' :
+        type === 'success' ? 'bg-emerald-950/90 border-emerald-800 text-emerald-200' :
+        'bg-[#141722] border-[#1f222e] text-gray-200'
       }`;
       toast.innerHTML = `<span>${msg}</span><button onclick="this.parentElement.remove()" class="text-xs opacity-60 hover:opacity-100">✕</button>`;
       container.appendChild(toast);
@@ -372,19 +404,19 @@
 
     function copyRoomCode() {
       navigator.clipboard.writeText(document.getElementById('active-room-id').innerText);
-      showToast('Classroom code copied!', 'success');
+      showToast('Classroom Code Copied!', 'success');
     }
 
     function getValidName() {
       const nameInput = document.getElementById('user-display-name').value.trim();
       if (!nameInput) {
-        showToast('Please enter your full name first!', 'error');
+        showToast('Please enter your display name', 'error');
         return null;
       }
       return nameInput;
     }
 
-    /* FULLSCREEN ENGINE & SCREEN ROTATION CONTROLS */
+    /* FULLSCREEN ENGINE & SCREEN ROTATION CHAT DRAWER */
     function toggleFullScreenStage() {
       const stage = document.getElementById('stage-wrapper');
       const toggleBtn = document.getElementById('fullscreen-chat-toggle');
@@ -395,19 +427,22 @@
           if (screen.orientation && screen.orientation.lock) {
             screen.orientation.lock('landscape').catch(() => {});
           }
-        }).catch(() => showToast('Fullscreen mode blocked by browser', 'error'));
+        }).catch(() => showToast('Fullscreen mode not permitted', 'error'));
       } else {
         document.exitFullscreen();
         toggleBtn.classList.add('hidden');
+        document.getElementById('fullscreen-chat-drawer').classList.add('hidden', 'translate-x-full');
       }
     }
 
     function toggleOverlayChatPanel() {
-      const panel = document.getElementById('side-panel');
-      if (panel.classList.contains('hidden')) {
-        panel.classList.remove('hidden');
+      const drawer = document.getElementById('fullscreen-chat-drawer');
+      if (drawer.classList.contains('hidden')) {
+        drawer.classList.remove('hidden');
+        setTimeout(() => drawer.classList.remove('translate-x-full'), 10);
       } else {
-        panel.classList.add('hidden');
+        drawer.classList.add('translate-x-full');
+        setTimeout(() => drawer.classList.add('hidden'), 300);
       }
     }
 
@@ -421,7 +456,7 @@
 
       if (isHost) {
         document.getElementById('role-badge').innerText = 'Teacher (Host)';
-        document.getElementById('role-badge').className = "ml-1 text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+        document.getElementById('role-badge').className = "ml-2 text-[10px] font-bold tracking-wider uppercase px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
         document.getElementById('host-poll-creator').classList.remove('hidden');
         document.getElementById('host-chat-controls').classList.remove('hidden');
         document.getElementById('host-chat-controls').classList.add('flex');
@@ -430,67 +465,111 @@
       }
     }
 
-    /* DIRECT YOUTUBE IFRAME API + IOS AUTOPLAY ENGINE */
-    function setupYouTubeEmbed(videoId) {
-      if (ytPlayer && typeof ytPlayer.destroy === 'function') {
-        ytPlayer.destroy();
-      }
+    /* DIRECT YOUTUBE API WITH 4-SECOND COVER OVERLAY */
+  // Replace your setupYouTubeEmbed function with this updated version:
 
-      const container = document.getElementById('yt-iframe-container');
-      if (container) {
-        container.innerHTML = '<div id="yt-player"></div>';
-      }
+function setupYouTubeEmbed(videoId) {
+  if (ytPlayer && typeof ytPlayer.destroy === 'function') {
+    ytPlayer.destroy();
+  }
 
-      const createPlayer = () => {
-        ytPlayer = new YT.Player('yt-player', {
-          videoId: videoId,
-          width: '100%',
-          height: '100%',
-          playerVars: {
-            'autoplay': 1,
-            'controls': 0,
-            'rel': 0,
-            'modestbranding': 1,
-            'disablekb': 1,
-            'enablejsapi': 1,
-            'mute': 1,
-            'showinfo': 0,
-            'iv_load_policy': 3,
-            'fs': 0,
-            'playsinline': 1,
-            'origin': window.location.origin
-          },
-          events: {
-            'onReady': (event) => {
-              event.target.playVideo();
-              document.getElementById('ios-unmute-btn').classList.remove('hidden');
-            },
-            'onStateChange': (e) => {
-              if (e.data === YT.PlayerState.PAUSED) {
-                ytPlayer.playVideo();
-              }
-            }
+  const cover = document.getElementById('yt-cover-overlay');
+  
+  // Show cover initially
+  showCoverOverlay("Connecting to secure stream...");
+
+  const container = document.getElementById('yt-iframe-container');
+  if (container) {
+    container.innerHTML = '<div id="yt-player"></div>';
+  }
+
+  const createPlayer = () => {
+    ytPlayer = new YT.Player('yt-player', {
+      videoId: videoId,
+      width: '100%',
+      height: '100%',
+      playerVars: {
+        'autoplay': 1,
+        'controls': 0,
+        'rel': 0,
+        'modestbranding': 1,
+        'disablekb': 1,
+        'enablejsapi': 1,
+        'mute': 1,
+        'showinfo': 0,
+        'iv_load_policy': 3,
+        'fs': 0,
+        'playsinline': 1,
+        'origin': window.location.origin
+      },
+      events: {
+        'onReady': (event) => {
+          event.target.playVideo();
+          document.getElementById('ios-unmute-btn').classList.remove('hidden');
+        },
+        'onStateChange': (e) => {
+          // Detect buffering or connection loss due to network issues
+          if (e.data === YT.PlayerState.BUFFERING || e.data === YT.PlayerState.UNSTARTED) {
+            showCoverOverlay("Reconnecting stream...");
+          } 
+          // Detect when video plays successfully
+          else if (e.data === YT.PlayerState.PLAYING) {
+            // Keep cover visible for 2.5 seconds to hide YouTube popups on startup/resume
+            setTimeout(() => {
+              hideCoverOverlay();
+            }, 2500);
+          } 
+          // Auto-resume if video gets paused
+          else if (e.data === YT.PlayerState.PAUSED) {
+            ytPlayer.playVideo();
           }
-        });
-      };
-
-      if (window.YT && window.YT.Player) {
-        createPlayer();
-      } else {
-        window.onYouTubeIframeAPIReady = createPlayer;
+        },
+        'onError': () => {
+          showCoverOverlay("Network Error. Retrying stream...");
+          setTimeout(() => {
+            if (ytPlayer && typeof ytPlayer.playVideo === 'function') {
+              ytPlayer.playVideo();
+            }
+          }, 3000);
+        }
       }
-    }
+    });
+  };
 
+  if (window.YT && window.YT.Player) {
+    createPlayer();
+  } else {
+    window.onYouTubeIframeAPIReady = createPlayer;
+  }
+}
+
+/* Helper functions for smooth cover overlay handling */
+function showCoverOverlay(message = "Re-Connecting...") {
+  const cover = document.getElementById('yt-cover-overlay');
+  if (!cover) return;
+  const statusText = cover.querySelector('p');
+  if (statusText) statusText.innerText = message;
+  
+  cover.style.opacity = '1';
+  cover.classList.remove('pointer-events-none');
+}
+
+function hideCoverOverlay() {
+  const cover = document.getElementById('yt-cover-overlay');
+  if (!cover) return;
+  cover.style.opacity = '0';
+  cover.classList.add('pointer-events-none');
+}
     function unmuteAudioIOS() {
       if (ytPlayer) {
         ytPlayer.unMute();
         ytPlayer.setVolume(100);
       }
       document.getElementById('ios-unmute-btn').classList.add('hidden');
-      showToast('Live stream audio activated!', 'success');
+      showToast('Live Audio Activated!', 'success');
     }
 
-    /* HOST ROOM CREATION */
+    /* HOST ROOM ENGINE */
     function createRoom() {
       myName = getValidName();
       if (!myName) return;
@@ -503,7 +582,7 @@
       const rawYtUrl = document.getElementById('yt-stream-url').value.trim();
       const videoId = extractYouTubeId(rawYtUrl);
       if (!videoId) {
-        return showToast('Please enter a valid YouTube Video Link or ID!', 'error');
+        return showToast('Please enter a valid YouTube Link or ID!', 'error');
       }
 
       isHost = true;
@@ -537,7 +616,7 @@
         });
 
         conn.on('close', () => {
-          const name = userNames[conn.peer] || 'A student';
+          const name = userNames[conn.peer] || 'Student';
           delete dataConnections[conn.peer];
           delete userNames[conn.peer];
           delete micPermissions[conn.peer];
@@ -546,7 +625,7 @@
           delete handRaiseTimers[conn.peer];
           updateParticipantListUI();
           broadcastUserList();
-          appendChatMessage('System', `${name} left the classroom.`, false);
+          appendChatMessage('System', `${name} left the room.`, false);
         });
       });
     }
@@ -562,7 +641,7 @@
         });
         updateParticipantListUI();
         broadcastUserList();
-        appendChatMessage('System', `${data.name} joined the classroom.`, false);
+        appendChatMessage('System', `${data.name} joined the class.`, false);
       }
 
       if (data.type === 'chat') {
@@ -601,13 +680,13 @@
       }
     }
 
-    /* STUDENT JOIN ROOM */
+    /* STUDENT JOIN ENGINE */
     function joinRoom() {
       myName = getValidName();
       if (!myName) return;
 
       const roomCode = document.getElementById('room-input').value.trim();
-      if (roomCode.length !== 6) return showToast('Enter valid 6-digit classroom code', 'error');
+      if (roomCode.length !== 6) return showToast('Enter valid 6-digit code', 'error');
 
       isHost = false;
       transitionToStage();
@@ -626,7 +705,7 @@
 
         hostConn.on('open', () => {
           hostConn.send({ type: 'register-user', name: myName });
-          showToast('Connected to classroom!', 'success');
+          showToast('Connected to Live Stream!', 'success');
         });
 
         hostConn.on('data', (data) => {
@@ -682,7 +761,7 @@
           document.getElementById('mic-allowed-modal').classList.remove('hidden');
         } else {
           disableStudentMicNow();
-          showToast('The host muted your microphone.', 'error');
+          showToast('Teacher muted your microphone.', 'error');
         }
       }
 
@@ -698,7 +777,7 @@
       }
 
       if (data.type === 'kicked') {
-        showToast('You have been removed from the class by the host.', 'error');
+        showToast('You have been removed from the class.', 'error');
         setTimeout(() => location.reload(), 1500);
       }
 
@@ -719,7 +798,7 @@
       broadcastData({ type: 'user-list', users: fullMap, totalCount: totalCount });
     }
 
-    /* PARTICIPANTS UI & HOST DASHBOARD CONTROLS */
+    /* PARTICIPANTS UI ENGINE */
     function updateParticipantListUI(remoteTotalCount = null) {
       const container = document.getElementById('participant-list');
       const countSpan = document.getElementById('user-count');
@@ -730,7 +809,7 @@
       if (isHost) {
         const totalCount = Object.keys(dataConnections).length + 1;
         countSpan.innerText = totalCount;
-        notice.innerHTML = 'Host Dashboard: Manage mics & raised hands.';
+        notice.innerHTML = 'Teacher Control: Manage Mics & Permissions';
 
         const activeHandRaises = Object.values(handRaises).filter(Boolean).length;
         if (activeHandRaises > 0) {
@@ -743,14 +822,14 @@
         container.innerHTML = '';
 
         const hostRow = document.createElement('div');
-        hostRow.className = "bg-[#121316] p-2.5 rounded-xl border border-indigo-500/40 flex items-center justify-between text-xs";
+        hostRow.className = "bg-[#141722] p-2.5 rounded-xl border border-indigo-500/30 flex items-center justify-between text-xs";
         hostRow.innerHTML = `
           <div class="flex items-center gap-2">
             <span class="material-icons text-indigo-400 text-sm">workspace_premium</span>
             <span class="font-bold text-white">${myName} (You)</span>
           </div>
           <div class="flex items-center gap-1">
-            <button onclick="toggleStudentMic()" class="p-1 rounded-lg ${isStudentMicOn ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-[#202126] text-gray-400'} hover:text-white" title="Toggle Own Mic">
+            <button onclick="toggleStudentMic()" class="p-1 rounded-lg ${isStudentMicOn ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-[#1a1d28] text-gray-400'} hover:text-white" title="Toggle Own Mic">
               <span class="material-icons text-xs">${isStudentMicOn ? 'mic' : 'mic_off'}</span>
             </button>
             <span class="text-[10px] bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded-full font-semibold">Teacher</span>
@@ -764,14 +843,14 @@
           const hasHandRaised = !!handRaises[id];
 
           const row = document.createElement('div');
-          row.className = `bg-[#121316] p-2.5 rounded-xl border ${hasHandRaised ? 'border-amber-500/50 bg-amber-500/10' : 'border-[#232429]'} flex items-center justify-between gap-2 text-xs transition`;
+          row.className = `bg-[#141722] p-2.5 rounded-xl border ${hasHandRaised ? 'border-amber-500/50 bg-amber-500/10' : 'border-[#1f222e]'} flex items-center justify-between gap-2 text-xs transition`;
           row.innerHTML = `
             <div class="flex items-center gap-1.5 overflow-hidden">
               ${hasHandRaised ? '<span class="material-icons text-amber-400 text-sm shrink-0 animate-bounce" title="Raised Hand">front_hand</span>' : ''}
               <span class="${hasHandRaised ? 'text-amber-300 font-bold' : 'text-gray-200'} truncate">${name}</span>
             </div>
             <div class="flex items-center gap-1 shrink-0">
-              <button onclick="toggleUserMicPermission('${id}')" class="p-1 rounded-lg ${micAllowed ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-[#202126] text-gray-400'} hover:text-white" title="${micAllowed ? 'Mute Mic' : 'Allow Mic'}">
+              <button onclick="toggleUserMicPermission('${id}')" class="p-1 rounded-lg ${micAllowed ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-[#1a1d28] text-gray-400'} hover:text-white" title="${micAllowed ? 'Mute Mic' : 'Allow Mic'}">
                 <span class="material-icons text-xs">${micAllowed ? 'mic' : 'mic_off'}</span>
               </button>
               <button onclick="blockUser('${id}')" class="p-1 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/30" title="Block Student">
@@ -785,11 +864,11 @@
       } else {
         const count = remoteTotalCount || (Object.keys(userNames).length || 1);
         countSpan.innerText = count;
-        notice.innerHTML = 'Classroom Roster';
+        notice.innerHTML = 'Attending Roster';
         container.innerHTML = `
-          <div class="bg-[#121316] p-3 rounded-xl border border-[#232429] text-center space-y-2">
-            <span class="material-icons text-indigo-400 text-2xl">groups</span>
-            <p class="text-xs text-gray-300 font-medium">${count} Students Attending Live</p>
+          <div class="bg-[#141722] p-4 rounded-2xl border border-[#1f222e] text-center space-y-2">
+            <span class="material-icons text-indigo-400 text-3xl">groups</span>
+            <p class="text-xs text-gray-200 font-semibold">${count} Active Live Students</p>
           </div>
         `;
       }
@@ -803,7 +882,7 @@
         conn.send({ type: 'allow-mic-toggle', allowed: micPermissions[peerId] });
       }
       updateParticipantListUI();
-      showToast(`${userNames[peerId] || 'Student'} mic access updated.`, 'info');
+      showToast(`${userNames[peerId] || 'Student'} Mic permission toggled.`, 'info');
     }
 
     function blockUser(peerId) {
@@ -822,10 +901,10 @@
       delete handRaiseTimers[peerId];
       updateParticipantListUI();
       broadcastUserList();
-      showToast('Student blocked and removed from class.', 'error');
+      showToast('Student blocked and removed.', 'error');
     }
 
-    /* STUDENT MIC & HAND RAISE ENGINE */
+    /* MIC & HAND RAISE ENGINE */
     function enableStudentMicNow() {
       document.getElementById('mic-allowed-modal').classList.add('hidden');
       const btn = document.getElementById('student-mic-btn');
@@ -851,13 +930,13 @@
           }
 
           if (btn) {
-            btn.className = "w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-emerald-600 hover:bg-emerald-500 flex items-center justify-center transition shadow-lg";
-            btn.innerHTML = `<span class="material-icons text-white text-base sm:text-lg">mic</span>`;
+            btn.className = "w-11 h-11 rounded-2xl bg-emerald-600 hover:bg-emerald-500 flex items-center justify-center transition shadow-lg shadow-emerald-600/20";
+            btn.innerHTML = `<span class="material-icons text-white text-lg">mic</span>`;
           }
           if (isHost) updateParticipantListUI();
-          showToast('Your mic is now live!', 'success');
+          showToast('Your microphone is live!', 'success');
         } catch (e) {
-          showToast('Microphone access blocked by browser.', 'error');
+          showToast('Microphone access denied', 'error');
         }
       } else {
         disableStudentMicNow();
@@ -872,10 +951,10 @@
       isStudentMicOn = false;
       const btn = document.getElementById('student-mic-btn');
       if (btn) {
-        btn.className = "w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#2c2d33] opacity-50 cursor-not-allowed flex items-center justify-center transition";
+        btn.className = "w-11 h-11 rounded-2xl bg-[#1a1d28] border border-[#262936] opacity-50 cursor-not-allowed flex items-center justify-center transition";
         btn.disabled = !isMicAllowedByHost && !isHost;
         if (isMicAllowedByHost || isHost) btn.classList.remove('opacity-50', 'cursor-not-allowed');
-        btn.innerHTML = `<span class="material-icons text-white text-base sm:text-lg">mic_off</span>`;
+        btn.innerHTML = `<span class="material-icons text-white text-lg">mic_off</span>`;
       }
       if (isHost) updateParticipantListUI();
     }
@@ -889,7 +968,7 @@
 
       if (isHandRaised) {
         btn.classList.add('bg-amber-500', 'text-black');
-        btn.classList.remove('bg-[#202126]', 'text-amber-400');
+        btn.classList.remove('bg-[#1a1d28]', 'text-amber-400');
         badge.classList.remove('hidden');
 
         handRaiseTimer = setTimeout(() => {
@@ -901,7 +980,7 @@
 
       } else {
         btn.classList.remove('bg-amber-500', 'text-black');
-        btn.classList.add('bg-[#202126]', 'text-amber-400');
+        btn.classList.add('bg-[#1a1d28]', 'text-amber-400');
         badge.classList.add('hidden');
       }
 
@@ -911,7 +990,7 @@
       }
     }
 
-    /* EMOJI REACTION ENGINE */
+    /* EMOJI REACTION SYSTEM */
     function sendEmojiReaction(emoji) {
       triggerFloatingEmoji(emoji);
       if (isHost) {
@@ -948,7 +1027,7 @@
       const o3 = document.getElementById('poll-opt3').value.trim();
       const o4 = document.getElementById('poll-opt4').value.trim();
 
-      if (!q || !o1 || !o2) return showToast('Fill question and at least 2 options!', 'error');
+      if (!q || !o1 || !o2) return showToast('Question and at least 2 options required!', 'error');
 
       const optionsList = [o1, o2];
       if (o3) optionsList.push(o3);
@@ -963,7 +1042,7 @@
       document.getElementById('delete-poll-btn').classList.remove('hidden');
       broadcastData({ type: 'poll-update', poll: currentPoll });
       renderPollUI();
-      showToast('Poll published!', 'success');
+      showToast('Poll Published!', 'success');
     }
 
     function deletePoll() {
@@ -972,7 +1051,7 @@
       document.getElementById('delete-poll-btn').classList.add('hidden');
       broadcastData({ type: 'poll-delete' });
       renderPollUI();
-      showToast('Poll deleted.', 'info');
+      showToast('Poll removed.', 'info');
     }
 
     function votePoll(index) {
@@ -1007,11 +1086,11 @@
         const hasVoted = userPollVote !== null;
 
         html += `
-          <div class="bg-[#16171b] border border-[#2c2d33] p-2 rounded-xl relative overflow-hidden cursor-pointer ${hasVoted ? 'pointer-events-none' : 'hover:border-indigo-500'}" onclick="votePoll(${i})">
+          <div class="bg-[#090a0f] border border-[#262936] p-2.5 rounded-xl relative overflow-hidden cursor-pointer ${hasVoted ? 'pointer-events-none' : 'hover:border-indigo-500'}" onclick="votePoll(${i})">
             <div class="absolute inset-0 bg-indigo-600/20" style="width: ${pct}%"></div>
             <div class="relative flex justify-between items-center text-xs">
-              <span class="font-medium text-gray-200">${opt}</span>
-              <span class="text-[10px] text-indigo-300 font-bold">${pct}% (${count})</span>
+              <span class="font-semibold text-gray-200">${opt}</span>
+              <span class="text-[10px] text-indigo-400 font-bold">${pct}% (${count})</span>
             </div>
           </div>
         `;
@@ -1021,19 +1100,19 @@
       card.innerHTML = html;
     }
 
-    /* CHAT MODERATION & DUAL MODE ENGINE */
+    /* CHAT SYSTEM */
     function toggleGlobalChatState() {
       if (!isHost) return;
       isGlobalChatEnabled = !isGlobalChatEnabled;
       
       const btn = document.getElementById('toggle-chat-enable-btn');
-      btn.innerText = isGlobalChatEnabled ? "Chat: Enabled" : "Chat: Disabled";
+      btn.innerText = isGlobalChatEnabled ? "Chat: Active" : "Chat: Muted";
       btn.className = isGlobalChatEnabled 
-        ? "px-2 py-1 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-semibold"
-        : "px-2 py-1 rounded bg-red-500/20 text-red-300 border border-red-500/30 font-semibold";
+        ? "px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold"
+        : "px-2.5 py-1 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 font-semibold";
 
       broadcastData({ type: 'chat-state-change', enabled: isGlobalChatEnabled });
-      showToast(`Global chat ${isGlobalChatEnabled ? 'enabled' : 'disabled'}`, 'info');
+      showToast(`Chat ${isGlobalChatEnabled ? 'enabled' : 'disabled'}`, 'info');
     }
 
     function changeChatMode(mode) {
@@ -1041,34 +1120,34 @@
       currentChatMode = mode;
       broadcastData({ type: 'chat-mode-change', mode: currentChatMode });
       updateChatModeIndicatorUI();
-      showToast(`Chat mode set to ${mode === 'ALL' ? 'All Chat' : 'Host Only (Private)'}`, 'info');
+      showToast(`Chat mode updated to ${mode === 'ALL' ? 'Public' : 'Teacher Private'}`, 'info');
     }
 
     function updateStudentChatInputState(enabled) {
       if (isHost) return;
-      const input = document.getElementById('chat-input');
+      const inputs = [document.getElementById('chat-input'), document.getElementById('drawer-chat-input')];
       const btn = document.getElementById('send-chat-btn');
-      input.disabled = !enabled;
-      btn.disabled = !enabled;
-      if (!enabled) {
-        input.placeholder = "Chat disabled by host...";
-      } else {
-        input.placeholder = "Ask a question...";
-      }
+      
+      inputs.forEach(input => {
+        if (!input) return;
+        input.disabled = !enabled;
+        input.placeholder = enabled ? "Ask a question..." : "Chat muted by teacher...";
+      });
+      if (btn) btn.disabled = !enabled;
     }
 
     function updateChatModeIndicatorUI() {
       const indicator = document.getElementById('chat-mode-indicator');
       if (currentChatMode === 'ALL') {
-        indicator.innerText = "All Chat Mode: Everyone sees all messages.";
+        indicator.innerText = "Public Chat Mode: Visible to everyone.";
       } else {
-        indicator.innerText = "Host Only Mode: Messages are private between you and teacher.";
+        indicator.innerText = "Private Mode: Messages sent directly to teacher.";
       }
     }
 
-    function sendChatMessage(e) {
+    function sendChatMessage(e, inputId = 'chat-input') {
       e.preventDefault();
-      const input = document.getElementById('chat-input');
+      const input = document.getElementById(inputId);
       const msg = input.value.trim();
       if (!msg || (!isGlobalChatEnabled && !isHost)) return;
 
@@ -1087,40 +1166,50 @@
     }
 
     function appendChatMessage(sender, msg, isMe, peerId = null, msgId = null) {
-      const container = document.getElementById('chat-messages');
-      const div = document.createElement('div');
+      const mainContainer = document.getElementById('chat-messages');
+      const drawerContainer = document.getElementById('drawer-chat-messages');
 
-      if (sender === 'System') {
-        div.className = 'bg-[#202126] p-1.5 rounded-lg text-gray-400 text-[10px] text-center my-1';
-        div.innerText = msg;
-      } else {
-        div.className = `p-2 rounded-xl max-w-[85%] text-xs relative group ${isMe ? 'bg-indigo-600 text-white self-end' : 'bg-[#202126] text-gray-200 border border-[#2c2d33] self-start'}`;
-        
-        let hostControlsHtml = '';
-        if (isHost) {
-          const safeMsg = msg.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;');
-          hostControlsHtml = `<button onclick="pinMessage('${safeMsg}')" class="text-[10px] text-amber-400 hover:underline ml-2 font-semibold">Pin</button>`;
+      const createMsgEl = () => {
+        const div = document.createElement('div');
+        if (sender === 'System') {
+          div.className = 'bg-[#141722] p-1.5 rounded-xl text-gray-400 text-[10px] text-center my-1 font-medium border border-[#1f222e]';
+          div.innerText = msg;
+        } else {
+          div.className = `p-2.5 rounded-2xl max-w-[85%] text-xs relative ${isMe ? 'bg-indigo-600 text-white self-end shadow-md shadow-indigo-600/10' : 'bg-[#141722] text-gray-200 border border-[#1f222e] self-start'}`;
+          
+          let hostControlsHtml = '';
+          if (isHost) {
+            const safeMsg = msg.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+            hostControlsHtml = `<button onclick="pinMessage('${safeMsg}')" class="text-[10px] text-amber-400 hover:underline ml-2 font-semibold">Pin</button>`;
+          }
+
+          div.innerHTML = `
+            <div class="flex justify-between items-center text-[10px] opacity-70 font-bold mb-0.5">
+              <span>${sender}</span>
+              ${hostControlsHtml}
+            </div>
+            <p class="break-words font-medium">${msg}</p>
+          `;
         }
+        return div;
+      };
 
-        div.innerHTML = `
-          <div class="flex justify-between items-center text-[10px] opacity-75 font-bold mb-0.5">
-            <span>${sender}</span>
-            ${hostControlsHtml}
-          </div>
-          <p class="break-words">${msg}</p>
-        `;
+      if (mainContainer) {
+        mainContainer.appendChild(createMsgEl());
+        mainContainer.scrollTop = mainContainer.scrollHeight;
       }
-
-      container.appendChild(div);
-      container.scrollTop = container.scrollHeight;
+      if (drawerContainer) {
+        drawerContainer.appendChild(createMsgEl());
+        drawerContainer.scrollTop = drawerContainer.scrollHeight;
+      }
     }
 
-    /* PINNED MESSAGE ENGINE (INSIDE CHAT TOP ONLY) */
+    /* PINNED MESSAGES ENGINE */
     function pinMessage(msg) {
       if (!isHost) return;
       displayPinnedMessage(msg);
       broadcastData({ type: 'pin-chat', message: msg });
-      showToast('Message pinned inside chat!', 'success');
+      showToast('Message pinned to chat', 'success');
     }
 
     function unpinMessage() {
@@ -1141,7 +1230,7 @@
       document.getElementById('pinned-banner').classList.add('hidden');
     }
 
-    /* TAB SWITCHING SYSTEM */
+    /* TAB SYSTEM SWITCHING */
     function toggleSidePanel(defaultTab = 'users') {
       const panel = document.getElementById('side-panel');
       if (panel.classList.contains('hidden')) {
@@ -1165,19 +1254,19 @@
       chatTab.classList.add('hidden');
       pollsTab.classList.add('hidden');
 
-      usersBtn.className = "flex-1 py-1 text-xs rounded-lg text-gray-400 hover:text-white font-medium transition";
-      chatBtn.className = "flex-1 py-1 text-xs rounded-lg text-gray-400 hover:text-white font-medium transition";
-      pollsBtn.className = "flex-1 py-1 text-xs rounded-lg text-gray-400 hover:text-white font-medium transition";
+      usersBtn.className = "flex-1 py-1.5 text-xs rounded-lg text-gray-400 hover:text-white font-semibold transition";
+      chatBtn.className = "flex-1 py-1.5 text-xs rounded-lg text-gray-400 hover:text-white font-semibold transition";
+      pollsBtn.className = "flex-1 py-1.5 text-xs rounded-lg text-gray-400 hover:text-white font-semibold transition";
 
       if (tab === 'users') {
         usersTab.classList.remove('hidden');
-        usersBtn.className = "flex-1 py-1 text-xs rounded-lg bg-indigo-600 text-white font-medium transition";
+        usersBtn.className = "flex-1 py-1.5 text-xs rounded-lg bg-indigo-600 text-white font-semibold transition";
       } else if (tab === 'chat') {
         chatTab.classList.remove('hidden');
-        chatBtn.className = "flex-1 py-1 text-xs rounded-lg bg-indigo-600 text-white font-medium transition";
+        chatBtn.className = "flex-1 py-1.5 text-xs rounded-lg bg-indigo-600 text-white font-semibold transition";
       } else if (tab === 'polls') {
         pollsTab.classList.remove('hidden');
-        pollsBtn.className = "flex-1 py-1 text-xs rounded-lg bg-indigo-600 text-white font-medium transition";
+        pollsBtn.className = "flex-1 py-1.5 text-xs rounded-lg bg-indigo-600 text-white font-semibold transition";
       }
     }
 
