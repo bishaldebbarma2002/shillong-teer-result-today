@@ -2,22 +2,50 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Enterprise Live Classroom</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.5/peerjs.min.js"></script>
   <script src="https://www.youtube.com/iframe_api"></script>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-    ::-webkit-scrollbar { width: 6px; }
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #0f1013;
+      color: #ffffff;
+      height: 100dvh;
+      width: 100vw;
+      overflow: hidden;
+    }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
     ::-webkit-scrollbar-track { background: #121316; }
     ::-webkit-scrollbar-thumb { background: #2c2d32; border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: #3f4046; }
     .no-select { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+
+    /* Responsive iPad & Mobile layout setup */
+    @media (max-width: 1024px) {
+      .app-layout { flex-direction: column !important; }
+      .stage-container { height: 38vh !important; min-height: 220px; max-height: 45vh; }
+      .panel-container { height: calc(62vh - 3.5rem) !important; width: 100% !important; flex: 1; }
+    }
+
+    @media (min-width: 1025px) {
+      .stage-container { height: 100% !important; }
+      .panel-container { height: 100% !important; width: 340px !important; }
+    }
+
+    /* Video Masking to hide YouTube Logos & Watch links */
+    .yt-mask-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: transparent;
+      z-index: 15;
+      pointer-events: auto;
+    }
   </style>
 </head>
-<body class="bg-[#0f1013] text-white h-[100svh] min-h-screen flex flex-col justify-between overflow-hidden antialiased no-select">
+<body class="h-[100dvh] w-screen flex flex-col justify-between overflow-hidden antialiased no-select">
 
   <!-- TOP BAR NAVIGATION -->
   <header id="top-bar" class="hidden h-14 px-3 sm:px-6 border-b border-[#232429] flex justify-between items-center z-20 shrink-0 bg-[#16171b]">
@@ -33,9 +61,16 @@
     </div>
 
     <div class="flex items-center gap-2 sm:gap-3">
+      <!-- HOST LIVE HAND RAISE NOTIFICATION BADGE -->
+      <div id="host-hand-alert" class="hidden text-xs bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2.5 py-0.5 rounded-full flex items-center gap-1.5 font-semibold animate-pulse">
+        <span class="material-icons text-xs">front_hand</span> 
+        <span id="host-hand-count">0</span> Raised Hand(s)
+      </div>
+
       <span id="hand-raised-badge" class="hidden text-xs bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2.5 py-0.5 rounded-full flex items-center gap-1 font-medium animate-pulse">
         <span class="material-icons text-xs">front_hand</span> Hand Raised
       </span>
+
       <button onclick="toggleSidePanel('users')" class="flex items-center gap-1.5 bg-[#202126] hover:bg-[#2c2d33] border border-[#2c2d33] px-3 py-1 rounded-full transition">
         <span class="material-icons text-gray-400 text-sm">groups</span>
         <span id="user-count" class="text-xs font-semibold text-gray-200">1</span>
@@ -91,18 +126,18 @@
   </main>
 
   <!-- MAIN BROADCAST STAGE -->
-  <main id="room-stage" class="hidden flex-1 relative p-2 sm:p-4 flex flex-col lg:flex-row gap-3 overflow-hidden h-full min-h-0">
+  <main id="room-stage" class="hidden flex-1 app-layout relative p-1.5 sm:p-3 flex flex-col lg:flex-row gap-2.5 overflow-hidden h-full min-h-0">
     
-    <div id="stage-wrapper" class="flex-1 relative flex flex-col justify-center items-center h-full w-full overflow-hidden bg-[#0a0b0d] rounded-2xl border border-[#232429]">
+    <div id="stage-wrapper" class="stage-container relative flex flex-col justify-center items-center w-full overflow-hidden bg-[#0a0b0d] rounded-2xl border border-[#232429]">
       
       <div id="video-grid" class="w-full h-full relative flex items-center justify-center p-0">
-        <!-- Direct Autoplay Player Frame -->
+        <!-- Direct Autoplay Player Frame with Scale & Protection Layer -->
         <div id="yt-player-wrapper" class="relative w-full h-full bg-black overflow-hidden flex items-center justify-center">
           <div id="yt-iframe-container" class="w-full h-full relative pointer-events-none scale-125 origin-center">
             <div id="yt-player"></div>
           </div>
-          <!-- Blocking layer disables title clicks, logos & watch on youtube links -->
-          <div class="absolute inset-0 bg-transparent z-10 pointer-events-auto"></div>
+          <!-- Masking layer disables youtube title clicks, branding & popup links -->
+          <div class="yt-mask-overlay"></div>
         </div>
       </div>
 
@@ -110,51 +145,55 @@
         <span class="w-2 h-2 rounded-full bg-white animate-ping"></span> LIVE BROADCAST
       </div>
 
+      <!-- UNMUTE ACTION OVERLAY FOR MOBILE / IOS -->
+      <button id="ios-unmute-btn" onclick="unmuteAudioIOS()" class="hidden absolute z-30 bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-full text-xs font-semibold backdrop-blur shadow-2xl flex items-center gap-2 animate-bounce">
+        <span class="material-icons text-sm">volume_up</span> Tap to Enable Live Audio
+      </button>
+
       <button onclick="toggleFullScreenStage()" class="absolute top-3 right-3 bg-black/60 hover:bg-black/80 text-white p-2 rounded-full backdrop-blur transition z-20" title="Fullscreen">
         <span class="material-icons text-sm">fullscreen</span>
       </button>
 
-      <!-- PINNED CHAT BANNER -->
-      <div id="pinned-banner" class="hidden absolute top-12 left-3 right-3 sm:left-6 sm:right-6 bg-indigo-900/90 border border-indigo-500/50 backdrop-blur-md rounded-xl p-2.5 z-20 flex items-center justify-between text-xs text-white shadow-2xl">
-        <div class="flex items-center gap-2 overflow-hidden">
-          <span class="material-icons text-amber-400 text-sm shrink-0">push_pin</span>
-          <span id="pinned-banner-text" class="truncate font-medium">Pinned message</span>
-        </div>
-        <button id="unpin-btn" onclick="unpinMessage()" class="hidden text-gray-300 hover:text-white ml-2 text-xs font-semibold underline">Unpin</button>
-      </div>
+      <!-- FULLSCREEN OVERLAY FLOATING CHAT BUTTON -->
+      <button id="fullscreen-chat-toggle" onclick="toggleOverlayChatPanel()" class="hidden absolute bottom-4 right-4 bg-indigo-600 hover:bg-indigo-500 text-white p-3 rounded-full shadow-2xl z-40 flex items-center gap-2 text-xs font-bold transition">
+        <span class="material-icons text-sm">chat</span> Chat
+      </button>
+
+      <!-- FLOATING REACTION CANVAS CONTAINER -->
+      <div id="reaction-canvas" class="absolute inset-0 pointer-events-none z-30 overflow-hidden"></div>
 
     </div>
 
-    <!-- SIDE PANEL (Participants, Chat, Polls) -->
-    <aside id="side-panel" class="hidden w-full lg:w-80 bg-[#16171b] border border-[#232429] rounded-2xl flex flex-col justify-between shadow-2xl h-full shrink-0 z-30 lg:z-auto fixed inset-0 lg:relative p-0">
+    <!-- SIDE PANEL (YouTube Style Bottom Panel for Mobile / Sidebar for Desktop) -->
+    <aside id="side-panel" class="panel-container w-full lg:w-80 bg-[#16171b] border border-[#232429] rounded-2xl flex flex-col justify-between shadow-2xl z-30 relative overflow-hidden">
       
-      <div class="p-3 border-b border-[#232429] flex justify-between items-center bg-[#121316] rounded-t-2xl">
-        <div class="flex gap-1 bg-[#0f1013] p-1 rounded-xl border border-[#232429]">
-          <button id="tab-users-btn" onclick="switchSideTab('users')" class="px-2.5 py-1 text-xs rounded-lg bg-indigo-600 text-white font-medium">Students</button>
-          <button id="tab-chat-btn" onclick="switchSideTab('chat')" class="px-2.5 py-1 text-xs rounded-lg text-gray-400 hover:text-white font-medium">Chat</button>
-          <button id="tab-polls-btn" onclick="switchSideTab('polls')" class="px-2.5 py-1 text-xs rounded-lg text-gray-400 hover:text-white font-medium">Polls</button>
+      <div class="p-2 sm:p-3 border-b border-[#232429] flex justify-between items-center bg-[#121316] rounded-t-2xl shrink-0">
+        <div class="flex gap-1 bg-[#0f1013] p-1 rounded-xl border border-[#232429] w-full justify-around">
+          <button id="tab-chat-btn" onclick="switchSideTab('chat')" class="flex-1 py-1 text-xs rounded-lg bg-indigo-600 text-white font-medium transition">Chat</button>
+          <button id="tab-polls-btn" onclick="switchSideTab('polls')" class="flex-1 py-1 text-xs rounded-lg text-gray-400 hover:text-white font-medium transition">Polls</button>
+          <button id="tab-users-btn" onclick="switchSideTab('users')" class="flex-1 py-1 text-xs rounded-lg text-gray-400 hover:text-white font-medium transition">Students</button>
         </div>
-        <button onclick="toggleSidePanel()" class="text-gray-400 hover:text-white p-1">
-          <span class="material-icons text-sm">close</span>
-        </button>
-      </div>
-      
-      <!-- PARTICIPANTS LIST -->
-      <div id="users-tab-content" class="flex-1 p-3 overflow-y-auto space-y-2 text-xs">
-        <div id="participant-notice" class="text-[11px] text-gray-400 mb-2"></div>
-        <div id="participant-list" class="space-y-1.5"></div>
       </div>
 
       <!-- CHAT SYSTEM & MODERATION -->
-      <div id="chat-tab-content" class="hidden flex-1 flex flex-col justify-between overflow-hidden">
+      <div id="chat-tab-content" class="flex-1 flex flex-col justify-between overflow-hidden relative">
         
+        <!-- PINNED CHAT BANNER INSIDE CHAT PANEL TOP -->
+        <div id="pinned-banner" class="hidden bg-indigo-950/90 border-b border-indigo-500/30 p-2.5 text-xs text-indigo-200 flex items-center justify-between shrink-0 backdrop-blur">
+          <div class="flex items-center gap-2 overflow-hidden">
+            <span class="material-icons text-amber-400 text-sm shrink-0">push_pin</span>
+            <span id="pinned-banner-text" class="truncate font-medium">Pinned message...</span>
+          </div>
+          <button id="unpin-btn" onclick="unpinMessage()" class="hidden text-amber-400 hover:text-amber-300 text-[10px] font-bold ml-2 underline shrink-0">UNPIN</button>
+        </div>
+
         <!-- TEACHER CHAT CONTROL BAR -->
-        <div id="host-chat-controls" class="hidden bg-[#121316] p-2 border-b border-[#232429] flex items-center justify-between text-[11px]">
+        <div id="host-chat-controls" class="hidden bg-[#121316] p-2 border-b border-[#232429] flex items-center justify-between text-[11px] shrink-0">
           <button id="toggle-chat-enable-btn" onclick="toggleGlobalChatState()" class="px-2 py-1 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-semibold">
             Chat: Enabled
           </button>
 
-          <select id="chat-mode-select" onchange="changeChatMode(this.value)" class="bg-[#16171b] border border-[#2c2d33] text-gray-300 rounded px-1.5 py-0.5 focus:outline-none">
+          <select id="chat-mode-select" onchange="changeChatMode(this.value)" class="bg-[#16171b] border border-[#2c2d33] text-gray-300 rounded px-1.5 py-0.5 focus:outline-none text-[11px]">
             <option value="ALL">Mode: All Chat</option>
             <option value="INDIVIDUAL">Mode: Host Only (Private)</option>
           </select>
@@ -166,7 +205,16 @@
           </div>
         </div>
 
-        <div class="p-3 border-t border-[#232429] bg-[#121316]">
+        <!-- EMOJI QUICK REACTION BAR -->
+        <div class="px-3 py-1.5 bg-[#121316] border-t border-[#232429] flex justify-around items-center shrink-0">
+          <button onclick="sendEmojiReaction('👍')" class="hover:scale-125 transition text-base">👍</button>
+          <button onclick="sendEmojiReaction('❤️')" class="hover:scale-125 transition text-base">❤️</button>
+          <button onclick="sendEmojiReaction('👏')" class="hover:scale-125 transition text-base">👏</button>
+          <button onclick="sendEmojiReaction('❓')" class="hover:scale-125 transition text-base">❓</button>
+          <button onclick="sendEmojiReaction('🔥')" class="hover:scale-125 transition text-base">🔥</button>
+        </div>
+
+        <div class="p-2.5 border-t border-[#232429] bg-[#121316] shrink-0">
           <form id="chat-form" onsubmit="sendChatMessage(event)" class="flex gap-2">
             <input id="chat-input" type="text" autocomplete="off" placeholder="Ask a question..." class="flex-1 bg-[#16171b] border border-[#2c2d33] focus:border-indigo-500 focus:outline-none rounded-xl px-3 py-2 text-xs text-white" />
             <button id="send-chat-btn" type="submit" class="p-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl flex items-center justify-center shrink-0">
@@ -176,7 +224,13 @@
         </div>
       </div>
 
-      <!-- POLLS TAB (4 OPTIONS SUPPORT) -->
+      <!-- PARTICIPANTS LIST -->
+      <div id="users-tab-content" class="hidden flex-1 p-3 overflow-y-auto space-y-2 text-xs">
+        <div id="participant-notice" class="text-[11px] text-gray-400 mb-2"></div>
+        <div id="participant-list" class="space-y-1.5"></div>
+      </div>
+
+      <!-- POLLS TAB (2-4 OPTIONS SUPPORT) -->
       <div id="polls-tab-content" class="hidden flex-1 p-3 overflow-y-auto space-y-3 text-xs">
         <div id="host-poll-creator" class="hidden bg-[#121316] border border-[#232429] p-3 rounded-xl space-y-2">
           <span class="block font-semibold text-indigo-400">Create Live Poll (2-4 Options)</span>
@@ -285,7 +339,7 @@
     const userNames = {};       
     const micPermissions = {}; 
     const handRaises = {};     
-    const handRaiseTimers = {}; // Store timers per user
+    const handRaiseTimers = {}; 
     const blockedUsers = new Set();
 
     setInterval(() => {
@@ -330,12 +384,30 @@
       return nameInput;
     }
 
+    /* FULLSCREEN ENGINE & SCREEN ROTATION CONTROLS */
     function toggleFullScreenStage() {
       const stage = document.getElementById('stage-wrapper');
+      const toggleBtn = document.getElementById('fullscreen-chat-toggle');
+
       if (!document.fullscreenElement) {
-        stage.requestFullscreen().catch(() => showToast('Fullscreen mode blocked', 'error'));
+        stage.requestFullscreen().then(() => {
+          toggleBtn.classList.remove('hidden');
+          if (screen.orientation && screen.orientation.lock) {
+            screen.orientation.lock('landscape').catch(() => {});
+          }
+        }).catch(() => showToast('Fullscreen mode blocked by browser', 'error'));
       } else {
         document.exitFullscreen();
+        toggleBtn.classList.add('hidden');
+      }
+    }
+
+    function toggleOverlayChatPanel() {
+      const panel = document.getElementById('side-panel');
+      if (panel.classList.contains('hidden')) {
+        panel.classList.remove('hidden');
+      } else {
+        panel.classList.add('hidden');
       }
     }
 
@@ -358,7 +430,7 @@
       }
     }
 
-    /* DIRECT YOUTUBE IFRAME API SETUP */
+    /* DIRECT YOUTUBE IFRAME API + IOS AUTOPLAY ENGINE */
     function setupYouTubeEmbed(videoId) {
       if (ytPlayer && typeof ytPlayer.destroy === 'function') {
         ytPlayer.destroy();
@@ -385,16 +457,13 @@
             'showinfo': 0,
             'iv_load_policy': 3,
             'fs': 0,
+            'playsinline': 1,
             'origin': window.location.origin
           },
           events: {
             'onReady': (event) => {
               event.target.playVideo();
-              setTimeout(() => {
-                try {
-                  event.target.unMute();
-                } catch(e) {}
-              }, 1000);
+              document.getElementById('ios-unmute-btn').classList.remove('hidden');
             },
             'onStateChange': (e) => {
               if (e.data === YT.PlayerState.PAUSED) {
@@ -410,6 +479,15 @@
       } else {
         window.onYouTubeIframeAPIReady = createPlayer;
       }
+    }
+
+    function unmuteAudioIOS() {
+      if (ytPlayer) {
+        ytPlayer.unMute();
+        ytPlayer.setVolume(100);
+      }
+      document.getElementById('ios-unmute-btn').classList.add('hidden');
+      showToast('Live stream audio activated!', 'success');
     }
 
     /* HOST ROOM CREATION */
@@ -489,7 +567,6 @@
 
       if (data.type === 'chat') {
         if (!isGlobalChatEnabled) return;
-
         if (currentChatMode === 'ALL') {
           broadcastData(data);
         }
@@ -499,7 +576,6 @@
       if (data.type === 'hand-raise') {
         handRaises[conn.peer] = data.state;
         
-        // Auto-reset raise hand after 2 minutes (120 seconds) for host tracking
         if (handRaiseTimers[conn.peer]) clearTimeout(handRaiseTimers[conn.peer]);
         if (data.state) {
           handRaiseTimers[conn.peer] = setTimeout(() => {
@@ -509,6 +585,11 @@
         }
         
         updateParticipantListUI();
+      }
+
+      if (data.type === 'emoji-reaction') {
+        triggerFloatingEmoji(data.emoji);
+        broadcastData(data);
       }
 
       if (data.type === 'poll-vote') {
@@ -583,7 +664,8 @@
       if (data.type === 'chat') appendChatMessage(data.sender, data.message, false, null, data.msgId);
       if (data.type === 'pin-chat') displayPinnedMessage(data.message);
       if (data.type === 'unpin-chat') hidePinnedMessage();
-      
+      if (data.type === 'emoji-reaction') triggerFloatingEmoji(data.emoji);
+
       if (data.type === 'chat-state-change') {
         isGlobalChatEnabled = data.enabled;
         updateStudentChatInputState(data.enabled);
@@ -637,16 +719,26 @@
       broadcastData({ type: 'user-list', users: fullMap, totalCount: totalCount });
     }
 
-    /* PARTICIPANTS UI & HOST CONTROLS */
+    /* PARTICIPANTS UI & HOST DASHBOARD CONTROLS */
     function updateParticipantListUI(remoteTotalCount = null) {
       const container = document.getElementById('participant-list');
       const countSpan = document.getElementById('user-count');
       const notice = document.getElementById('participant-notice');
+      const hostAlertBox = document.getElementById('host-hand-alert');
+      const hostAlertCount = document.getElementById('host-hand-count');
 
       if (isHost) {
         const totalCount = Object.keys(dataConnections).length + 1;
         countSpan.innerText = totalCount;
         notice.innerHTML = 'Host Dashboard: Manage mics & raised hands.';
+
+        const activeHandRaises = Object.values(handRaises).filter(Boolean).length;
+        if (activeHandRaises > 0) {
+          hostAlertBox.classList.remove('hidden');
+          hostAlertCount.innerText = activeHandRaises;
+        } else {
+          hostAlertBox.classList.add('hidden');
+        }
 
         container.innerHTML = '';
 
@@ -733,7 +825,7 @@
       showToast('Student blocked and removed from class.', 'error');
     }
 
-    /* STUDENT MIC & HAND RAISE CONTROLS */
+    /* STUDENT MIC & HAND RAISE ENGINE */
     function enableStudentMicNow() {
       document.getElementById('mic-allowed-modal').classList.add('hidden');
       const btn = document.getElementById('student-mic-btn');
@@ -800,7 +892,6 @@
         btn.classList.remove('bg-[#202126]', 'text-amber-400');
         badge.classList.remove('hidden');
 
-        // Reset hand raise status automatically after 2 minutes (120 seconds)
         handRaiseTimer = setTimeout(() => {
           if (isHandRaised) {
             toggleHandRaise();
@@ -814,10 +905,38 @@
         badge.classList.add('hidden');
       }
 
-      if (!isHost && dataConnections[myPeerId || Object.keys(dataConnections)[0]]) {
+      if (!isHost) {
         const conn = Object.values(dataConnections)[0];
         if (conn) conn.send({ type: 'hand-raise', state: isHandRaised });
       }
+    }
+
+    /* EMOJI REACTION ENGINE */
+    function sendEmojiReaction(emoji) {
+      triggerFloatingEmoji(emoji);
+      if (isHost) {
+        broadcastData({ type: 'emoji-reaction', emoji: emoji });
+      } else {
+        const conn = Object.values(dataConnections)[0];
+        if (conn) conn.send({ type: 'emoji-reaction', emoji: emoji });
+      }
+    }
+
+    function triggerFloatingEmoji(emoji) {
+      const canvas = document.getElementById('reaction-canvas');
+      const el = document.createElement('div');
+      el.innerText = emoji;
+      el.className = 'absolute text-3xl animate-bounce transition-all duration-1000';
+      el.style.left = Math.random() * 80 + 10 + '%';
+      el.style.bottom = '15%';
+      canvas.appendChild(el);
+
+      setTimeout(() => {
+        el.style.transform = 'translateY(-120px)';
+        el.style.opacity = '0';
+      }, 50);
+
+      setTimeout(() => el.remove(), 1200);
     }
 
     /* POLL SYSTEM */
@@ -880,7 +999,6 @@
       }
 
       const totalVotes = currentPoll.votes.reduce((a, b) => a + b, 0) || 1;
-
       let html = `<p class="font-bold text-white text-xs mb-2">${currentPoll.question}</p><div class="space-y-2">`;
 
       currentPoll.options.forEach((opt, i) => {
@@ -997,11 +1115,12 @@
       container.scrollTop = container.scrollHeight;
     }
 
+    /* PINNED MESSAGE ENGINE (INSIDE CHAT TOP ONLY) */
     function pinMessage(msg) {
       if (!isHost) return;
       displayPinnedMessage(msg);
       broadcastData({ type: 'pin-chat', message: msg });
-      showToast('Message pinned for all users!', 'success');
+      showToast('Message pinned inside chat!', 'success');
     }
 
     function unpinMessage() {
@@ -1022,7 +1141,7 @@
       document.getElementById('pinned-banner').classList.add('hidden');
     }
 
-    /* UI TAB NAVIGATION */
+    /* TAB SWITCHING SYSTEM */
     function toggleSidePanel(defaultTab = 'users') {
       const panel = document.getElementById('side-panel');
       if (panel.classList.contains('hidden')) {
@@ -1046,19 +1165,19 @@
       chatTab.classList.add('hidden');
       pollsTab.classList.add('hidden');
 
-      usersBtn.className = "px-2.5 py-1 text-xs rounded-lg text-gray-400 hover:text-white font-medium";
-      chatBtn.className = "px-2.5 py-1 text-xs rounded-lg text-gray-400 hover:text-white font-medium";
-      pollsBtn.className = "px-2.5 py-1 text-xs rounded-lg text-gray-400 hover:text-white font-medium";
+      usersBtn.className = "flex-1 py-1 text-xs rounded-lg text-gray-400 hover:text-white font-medium transition";
+      chatBtn.className = "flex-1 py-1 text-xs rounded-lg text-gray-400 hover:text-white font-medium transition";
+      pollsBtn.className = "flex-1 py-1 text-xs rounded-lg text-gray-400 hover:text-white font-medium transition";
 
       if (tab === 'users') {
         usersTab.classList.remove('hidden');
-        usersBtn.className = "px-2.5 py-1 text-xs rounded-lg bg-indigo-600 text-white font-medium";
+        usersBtn.className = "flex-1 py-1 text-xs rounded-lg bg-indigo-600 text-white font-medium transition";
       } else if (tab === 'chat') {
         chatTab.classList.remove('hidden');
-        chatBtn.className = "px-2.5 py-1 text-xs rounded-lg bg-indigo-600 text-white font-medium";
+        chatBtn.className = "flex-1 py-1 text-xs rounded-lg bg-indigo-600 text-white font-medium transition";
       } else if (tab === 'polls') {
         pollsTab.classList.remove('hidden');
-        pollsBtn.className = "px-2.5 py-1 text-xs rounded-lg bg-indigo-600 text-white font-medium";
+        pollsBtn.className = "flex-1 py-1 text-xs rounded-lg bg-indigo-600 text-white font-medium transition";
       }
     }
 
@@ -1069,22 +1188,18 @@
       location.reload();
     }
 
-    /* HOST EXIT AUDIO SOUND STOP ENGINE */
     function triggerClassEnded() {
-      // Kill YouTube Audio Immediately
       if (ytPlayer && typeof ytPlayer.destroy === 'function') {
         try { ytPlayer.destroy(); } catch(e){}
       }
       const container = document.getElementById('yt-iframe-container');
       if (container) container.innerHTML = '';
 
-      // Kill Local Audio Streams
       if (localMicStream) {
         localMicStream.getTracks().forEach(t => t.stop());
         localMicStream = null;
       }
 
-      // Kill All Peer Data/Call Connections
       if (peer) {
         try { peer.destroy(); } catch(e){}
       }
@@ -1092,7 +1207,7 @@
       document.getElementById('class-ended-overlay').classList.remove('hidden');
     }
 
-    /* ANTI-CHEAT DETECT INSPECT MODE GUARD */
+    /* ANTI-CHEAT INSPECT MODE PROTECTOR */
     (function setupAntiCheatGuard() {
       document.addEventListener('contextmenu', e => e.preventDefault());
 
@@ -1121,7 +1236,7 @@
 
       function triggerAntiCheatViolation() {
         if (isHost) return;
-        alert("Security Violation: Developer inspect mode is disabled during live class. You have been removed.");
+        alert("Security Violation: Developer inspect mode is disabled during live class.");
         location.reload();
       }
     })();
