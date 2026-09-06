@@ -1,232 +1,937 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shillong Teer Result Today - Live Updates</title>
-    
-    <meta name="description" content="Get the fastest Shillong Teer Live Results. View 1st Round, 2nd Round, Common Numbers, and 7-day previous result history. Updated daily.">
-    <meta name="keywords" content="Shillong Teer, Shillong Teer Result, Common Numbers, Teer Guti, Meghalaya Teer">
-
-    <style>
-        :root {
-            --glass: rgba(255, 255, 255, 0.95);
-            --primary: #1a2a6c;
-            --fr-color: #3498db;
-            --sr-color: #27ae60;
-            --accent: #e74c3c;
-            --text: #2c3e50;
-        }
-
-        body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            font-family: 'Inter', -apple-system, sans-serif;
-            margin: 0; padding: 15px; color: var(--text); min-height: 100vh;
-        }
-
-        .wrapper { max-width: 480px; margin: 0 auto; }
-        header { text-align: center; padding: 15px 0; }
-
-        .live-badge {
-            display: inline-flex; align-items: center; background: #fff;
-            padding: 5px 12px; border-radius: 50px; font-weight: 700;
-            font-size: 0.7rem; color: var(--accent); box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            text-transform: uppercase;
-        }
-
-        .dot {
-            height: 8px; width: 8px; background: var(--accent);
-            border-radius: 50%; margin-right: 6px; animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
-
-        h1 { font-size: 1.5rem; margin: 8px 0; color: var(--primary); }
-
-        .video-box {
-            margin: 15px 0; border-radius: 15px; overflow: hidden;
-            background: #000; aspect-ratio: 16 / 9; display: flex;
-            align-items: center; justify-content: center; color: white;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-
-        .card {
-            background: var(--glass); border-radius: 24px; padding: 25px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1); margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .result-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
-        .box { padding: 20px 10px; border-radius: 20px; background: #fff; border: 2px solid #eee; }
-        .fr-box { border-color: var(--fr-color); }
-        .sr-box { border-color: var(--sr-color); }
-
-        .label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; opacity: 0.7; }
-        .number { font-size: 2.8rem; font-weight: 900; }
-        .fr-box .number { color: var(--fr-color); }
-        .sr-box .number { color: var(--sr-color); }
-
-        .common-wrap { background: #fffbe6; border: 1px solid #ffe58f; padding: 15px; border-radius: 15px; }
-        
-        .btn {
-            width: 100%; padding: 16px; border: none; border-radius: 15px;
-            background: var(--primary); color: white; font-weight: 700;
-            cursor: pointer; margin-top: 15px;
-        }
-
-        .history-table { width: 100%; background: #fff; border-radius: 20px; overflow: hidden; margin-top: 15px; border-collapse: collapse; }
-        .history-table th { background: var(--primary); color: white; padding: 12px; font-size: 0.75rem; }
-        .history-table td { padding: 12px; text-align: center; border-bottom: 1px solid #f1f1f1; font-weight: 700; font-size: 0.9rem; }
-
-        .seo-text { font-size: 0.85rem; color: #576574; line-height: 1.6; margin-top: 25px; padding: 20px; background: #fff; border-radius: 20px; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Enterprise Live Classroom</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.5/peerjs.min.js"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #121316; }
+    ::-webkit-scrollbar-thumb { background: #2c2d32; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #3f4046; }
+    .no-select { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+  </style>
 </head>
-<body>
+<body class="bg-[#0f1013] text-white h-[100svh] min-h-screen flex flex-col justify-between overflow-hidden antialiased no-select">
 
-<div class="wrapper">
-    <header>
-        <div class="live-badge"><span class="dot"></span> Live Updates</div>
-        <h1>Shillong Teer Result</h1>
-        <div id="todayDate" style="font-weight: 800; font-size: 1.1rem; color: var(--primary);">--</div>
+  <!-- TOP BAR NAVIGATION -->
+  <header id="top-bar" class="hidden h-14 px-3 sm:px-6 border-b border-[#232429] flex justify-between items-center z-20 shrink-0 bg-[#16171b]">
+    <div class="flex items-center gap-2 sm:gap-3">
+      <span class="material-icons text-indigo-400 text-lg sm:text-xl">workspace_premium</span>
+      <span id="active-room-id" class="text-xs sm:text-sm font-semibold tracking-wide text-gray-200">------</span>
+      <button onclick="copyRoomCode()" class="text-gray-400 hover:text-white p-1 rounded-full transition" title="Copy Class ID">
+        <span class="material-icons text-sm">content_copy</span>
+      </button>
+      <span id="role-badge" class="ml-1 text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30">
+        Student
+      </span>
+    </div>
+
+    <div class="flex items-center gap-2 sm:gap-3">
+      <span id="hand-raised-badge" class="hidden text-xs bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2.5 py-0.5 rounded-full flex items-center gap-1 font-medium animate-pulse">
+        <span class="material-icons text-xs">front_hand</span> Hand Raised
+      </span>
+      <button onclick="toggleSidePanel('users')" class="flex items-center gap-1.5 bg-[#202126] hover:bg-[#2c2d33] border border-[#2c2d33] px-3 py-1 rounded-full transition">
+        <span class="material-icons text-gray-400 text-sm">groups</span>
+        <span id="user-count" class="text-xs font-semibold text-gray-200">1</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- LOBBY & CLASSROOM SETUP SCREEN -->
+  <main id="lobby-card" class="m-auto max-w-lg w-[92%] bg-[#16171b] p-5 sm:p-8 rounded-2xl border border-[#232429] shadow-2xl text-center space-y-5 my-auto">
+    <div class="flex justify-center items-center gap-2">
+      <span class="material-icons text-indigo-400 text-3xl">cast_for_education</span>
+      <h1 class="text-xl sm:text-2xl font-bold text-white tracking-tight">Enterprise Classroom</h1>
+    </div>
+    <p class="text-gray-400 text-xs">Ultra Scalable YouTube Broadcast Engine + WebRTC Interactivity</p>
+
+    <!-- USER NAME FIELD -->
+    <div class="text-left space-y-1">
+      <label class="block text-xs font-medium text-gray-300">Your Full Name <span class="text-red-400">*</span></label>
+      <input id="user-display-name" type="text" placeholder="e.g. Rahul Sharma" class="w-full bg-[#0f1013] border border-[#2c2d33] rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500" />
+    </div>
+
+    <!-- HOST SETUP SECTION -->
+    <div class="space-y-3 pt-1">
+      <div class="bg-[#0f1013] border border-[#232429] p-4 rounded-xl text-left space-y-3">
+        <label class="block text-xs font-semibold text-indigo-400 uppercase tracking-wider">Host Broadcast Dashboard</label>
         
-        <div id="video-container" class="video-box">
-            <div id="live-soon-msg">🔴 LIVE STREAM SOON <br> (4:00 PM & 5:00 PM)</div>
-        </div>
-    </header>
-
-    <main class="card">
-        <div class="result-row">
-            <div class="box fr-box">
-                <div class="label">1st Round</div>
-                <div class="number" id="fr">--</div>
-            </div>
-            <div class="box sr-box">
-                <div class="label">2nd Round</div>
-                <div class="number" id="sr">--</div>
-            </div>
+        <div>
+          <label class="block text-[11px] text-gray-400 mb-1">YouTube Live Video Link or Video ID</label>
+          <input id="yt-stream-url" type="text" placeholder="e.g. https://www.youtube.com/watch?v=dQw4w9WgXcQ or dQw4w9WgXcQ" class="w-full bg-[#16171b] border border-[#2c2d33] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500" />
         </div>
 
-        <div class="common-wrap">
-            <div class="label" style="color: #856404;">🎯 Common Numbers</div>
-            <div id="commonNums" style="font-size: 1.1rem; font-weight: 800; color: #856404;">--</div>
+        <div class="flex gap-2">
+          <input id="host-secret-pin" type="password" placeholder="Host Security Pin" class="w-full bg-[#16171b] border border-[#2c2d33] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500" />
+          <button onclick="createRoom()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-4 py-2 rounded-lg transition text-xs whitespace-nowrap shadow-lg">
+            Host Class
+          </button>
+        </div>
+      </div>
+
+      <div class="flex items-center my-3">
+        <div class="flex-grow border-t border-[#232429]"></div>
+        <span class="px-3 text-gray-500 text-xs uppercase font-medium">Or Join As Student</span>
+        <div class="flex-grow border-t border-[#232429]"></div>
+      </div>
+
+      <!-- STUDENT JOIN SECTION -->
+      <div class="flex gap-2">
+        <input id="room-input" type="text" maxlength="6" placeholder="6-Digit Class Code" class="w-full bg-[#0f1013] border border-[#2c2d33] rounded-xl px-4 py-2 text-center text-sm tracking-widest focus:outline-none focus:border-indigo-500 text-white uppercase" />
+        <button onclick="joinRoom()" class="bg-[#202126] hover:bg-[#2c2d33] border border-[#2c2d33] text-indigo-400 font-semibold px-6 rounded-xl text-sm transition">
+          Join
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- MAIN BROADCAST STAGE -->
+  <main id="room-stage" class="hidden flex-1 relative p-2 sm:p-4 flex flex-col lg:flex-row gap-3 overflow-hidden h-full min-h-0">
+    
+    <!-- VIDEO STAGE & EMBED SYSTEM -->
+    <div id="stage-wrapper" class="flex-1 relative flex flex-col justify-center items-center h-full w-full overflow-hidden bg-[#0a0b0d] rounded-2xl border border-[#232429]">
+      
+      <div id="video-grid" class="w-full h-full relative flex items-center justify-center p-0">
+        <!-- YouTube Dynamic Live Embed -->
+        <div id="yt-player-wrapper" class="relative w-full h-full bg-black overflow-hidden flex items-center justify-center">
+          <div id="yt-iframe-container" class="w-full h-full relative pointer-events-none">
+            <iframe id="yt-player" class="w-full h-full border-0 absolute inset-0 scale-[1.01]" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          <!-- Clean Stream Overlay to prevent user player interactions -->
+          <div class="absolute inset-0 bg-transparent z-10 pointer-events-auto"></div>
+        </div>
+      </div>
+
+      <!-- Live Stream Status Tag -->
+      <div class="absolute top-3 left-3 bg-red-600/90 text-white text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1.5 shadow-lg z-20 backdrop-blur">
+        <span class="w-2 h-2 rounded-full bg-white animate-ping"></span> LIVE BROADCAST
+      </div>
+
+      <!-- Fullscreen Toggle -->
+      <button onclick="toggleFullScreenStage()" class="absolute top-3 right-3 bg-black/60 hover:bg-black/80 text-white p-2 rounded-full backdrop-blur transition z-20" title="Fullscreen">
+        <span class="material-icons text-sm">fullscreen</span>
+      </button>
+
+      <!-- Pin Banner Overlay -->
+      <div id="pinned-banner" class="hidden absolute top-12 left-3 right-3 sm:left-6 sm:right-6 bg-indigo-900/90 border border-indigo-500/50 backdrop-blur-md rounded-xl p-2.5 z-20 flex items-center justify-between text-xs text-white shadow-2xl">
+        <div class="flex items-center gap-2 overflow-hidden">
+          <span class="material-icons text-amber-400 text-sm shrink-0">push_pin</span>
+          <span id="pinned-banner-text" class="truncate font-medium">Pinned message will appear here</span>
+        </div>
+        <button id="unpin-btn" onclick="unpinMessage()" class="hidden text-gray-300 hover:text-white ml-2 text-xs">Unpin</button>
+      </div>
+
+    </div>
+
+    <!-- SIDE CONTROL PANEL (Participants, Chat, Polls) -->
+    <aside id="side-panel" class="hidden w-full lg:w-80 bg-[#16171b] border border-[#232429] rounded-2xl flex flex-col justify-between shadow-2xl h-full shrink-0 z-30 lg:z-auto fixed inset-0 lg:relative p-0">
+      
+      <!-- TAB SELECTOR -->
+      <div class="p-3 border-b border-[#232429] flex justify-between items-center bg-[#121316] rounded-t-2xl">
+        <div class="flex gap-1 bg-[#0f1013] p-1 rounded-xl border border-[#232429]">
+          <button id="tab-users-btn" onclick="switchSideTab('users')" class="px-2.5 py-1 text-xs rounded-lg bg-indigo-600 text-white font-medium">Students</button>
+          <button id="tab-chat-btn" onclick="switchSideTab('chat')" class="px-2.5 py-1 text-xs rounded-lg text-gray-400 hover:text-white font-medium">Chat</button>
+          <button id="tab-polls-btn" onclick="switchSideTab('polls')" class="px-2.5 py-1 text-xs rounded-lg text-gray-400 hover:text-white font-medium">Polls</button>
+        </div>
+        <button onclick="toggleSidePanel()" class="text-gray-400 hover:text-white p-1">
+          <span class="material-icons text-sm">close</span>
+        </button>
+      </div>
+      
+      <!-- PARTICIPANTS TAB -->
+      <div id="users-tab-content" class="flex-1 p-3 overflow-y-auto space-y-2 text-xs">
+        <div id="participant-notice" class="text-[11px] text-gray-400 mb-2"></div>
+        <div id="participant-list" class="space-y-1.5"></div>
+      </div>
+
+      <!-- CHAT TAB -->
+      <div id="chat-tab-content" class="hidden flex-1 flex flex-col justify-between overflow-hidden">
+        <div id="chat-messages" class="flex-1 p-3 overflow-y-auto space-y-2 text-xs flex flex-col">
+          <div class="bg-[#202126] p-2 rounded-lg text-gray-400 text-[10px] text-center border border-[#2c2d33]">
+            Encrypted Live Classroom Chat
+          </div>
+        </div>
+        <div class="p-3 border-t border-[#232429] bg-[#121316]">
+          <form id="chat-form" onsubmit="sendChatMessage(event)" class="flex gap-2">
+            <input id="chat-input" type="text" autocomplete="off" placeholder="Ask a question..." class="flex-1 bg-[#16171b] border border-[#2c2d33] focus:border-indigo-500 focus:outline-none rounded-xl px-3 py-2 text-xs text-white" />
+            <button type="submit" class="p-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl flex items-center justify-center shrink-0">
+              <span class="material-icons text-sm">send</span>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- POLLS TAB -->
+      <div id="polls-tab-content" class="hidden flex-1 p-3 overflow-y-auto space-y-3 text-xs">
+        <!-- Host Poll Creator -->
+        <div id="host-poll-creator" class="hidden bg-[#121316] border border-[#232429] p-3 rounded-xl space-y-2">
+          <span class="block font-semibold text-indigo-400">Create Live Poll</span>
+          <input id="poll-question" type="text" placeholder="Poll Question..." class="w-full bg-[#16171b] border border-[#2c2d33] rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500" />
+          <input id="poll-opt1" type="text" placeholder="Option 1" class="w-full bg-[#16171b] border border-[#2c2d33] rounded-lg px-2.5 py-1 text-xs text-white focus:outline-none focus:border-indigo-500" />
+          <input id="poll-opt2" type="text" placeholder="Option 2" class="w-full bg-[#16171b] border border-[#2c2d33] rounded-lg px-2.5 py-1 text-xs text-white focus:outline-none focus:border-indigo-500" />
+          <div class="flex gap-2 pt-1">
+            <button onclick="publishPoll()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-1.5 rounded-lg text-xs font-medium">Launch Poll</button>
+            <button id="delete-poll-btn" onclick="deletePoll()" class="hidden bg-red-600/20 text-red-300 hover:bg-red-600/40 px-3 py-1.5 rounded-lg text-xs font-medium border border-red-500/30">Delete</button>
+          </div>
         </div>
 
-        <button class="btn" onclick="loadData()">REFRESH RESULTS</button>
-        <p id="status" style="font-size: 0.65rem; margin-top:10px; color: var(--sr-color); opacity: 0.7;">Initial Loading...</p>
-    </main>
+        <!-- Active Poll View -->
+        <div id="active-poll-card" class="bg-[#121316] border border-[#232429] p-3 rounded-xl space-y-3">
+          <p class="text-gray-400 text-center italic">No active poll currently running.</p>
+        </div>
+      </div>
 
-    <section>
-        <h2 style="font-size: 1.1rem; color: var(--primary); margin: 20px 5px 10px;">Previous Results History</h2>
-        <table class="history-table">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>F/R</th>
-                    <th>S/R</th>
-                </tr>
-            </thead>
-            <tbody id="historyBody"></tbody>
-        </table>
-    </section>
+    </aside>
 
-    <section class="seo-text">
-        <h2 style="font-size: 1.1rem; color: var(--primary);">Shillong Teer Game Rules</h2>
-        <p>The <b>Shillong Teer</b> is a unique archery-based lottery held in Meghalaya. It is played by choosing numbers from <b>00 to 99</b>. Results are declared daily except on <b>Sundays</b>.</p>
-    </section>
-</div>
+  </main>
 
-<script>
-    function getTodayString() {
-        const now = new Date();
-        const day = String(now.getDate()).padStart(2, '0');
-        const month = String(now.getMonth() + 1).padStart(2, '0');
-        const year = now.getFullYear();
-        return `${day}-${month}-${year}`;
+  <!-- BOTTOM FLOATING CONTROLS DOCK -->
+  <footer id="controls" class="hidden h-16 px-4 sm:px-6 border-t border-[#232429] flex justify-between items-center z-20 shrink-0 bg-[#16171b]">
+    <div class="hidden sm:flex items-center gap-2 text-sm font-medium text-gray-400">
+      <span id="clock" class="text-xs">00:00</span>
+      <span class="text-gray-600">|</span>
+      <span id="dock-room-code" class="text-xs tracking-wide text-gray-300">------</span>
+    </div>
+
+    <!-- CONTROLS DOCK -->
+    <div class="flex items-center gap-2 sm:gap-3 mx-auto sm:mx-0">
+      
+      <!-- Student Mic Button -->
+      <button id="student-mic-btn" onclick="toggleStudentMic()" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#2c2d33] opacity-50 cursor-not-allowed flex items-center justify-center transition" disabled title="Host mic permission required">
+        <span class="material-icons text-white text-base sm:text-lg">mic_off</span>
+      </button>
+
+      <!-- Student Hand Raise Button -->
+      <button id="hand-raise-btn" onclick="toggleHandRaise()" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#202126] hover:bg-[#2c2d33] border border-[#2c2d33] flex items-center justify-center transition text-amber-400" title="Raise Hand">
+        <span class="material-icons text-base sm:text-lg">front_hand</span>
+      </button>
+
+      <button onclick="leaveClassroom()" class="w-12 h-10 sm:w-14 sm:h-11 rounded-full bg-red-600 hover:bg-red-500 flex items-center justify-center transition shadow-lg" title="Leave Class">
+        <span class="material-icons text-white text-base sm:text-lg">call_end</span>
+      </button>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <button onclick="toggleSidePanel('chat')" class="p-2.5 rounded-full hover:bg-[#202126] text-gray-300 transition" title="Live Chat">
+        <span class="material-icons text-base sm:text-lg">chat</span>
+      </button>
+    </div>
+  </footer>
+
+  <!-- MIC PERMISSION ALLOWED NOTIFICATION MODAL -->
+  <div id="mic-allowed-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+    <div class="bg-[#16171b] border border-indigo-500/50 rounded-2xl p-6 max-w-sm w-full text-center space-y-4 shadow-2xl animate-bounce">
+      <div class="w-12 h-12 bg-emerald-500/20 border border-emerald-500/40 rounded-full flex items-center justify-center mx-auto text-emerald-400">
+        <span class="material-icons text-2xl">mic</span>
+      </div>
+      <div>
+        <h3 class="text-base font-bold text-white">Microphone Granted</h3>
+        <p class="text-xs text-gray-300 mt-1">The host has allowed you to speak. You can now turn on your microphone.</p>
+      </div>
+      <button onclick="enableStudentMicNow()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2.5 rounded-xl text-xs transition shadow-lg">
+        Turn On Microphone
+      </button>
+    </div>
+  </div>
+
+  <!-- CLASS ENDED FULLSCREEN OVERLAY -->
+  <div id="class-ended-overlay" class="hidden fixed inset-0 bg-[#0f1013] z-50 flex flex-col items-center justify-center p-6 text-center space-y-4">
+    <span class="material-icons text-indigo-400 text-6xl">school</span>
+    <h1 class="text-2xl sm:text-3xl font-bold text-white">Live Class Ended</h1>
+    <p class="text-gray-400 text-sm max-w-md">The teacher has concluded this live session. See you next time!</p>
+    <button onclick="location.reload()" class="mt-4 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-6 py-2.5 rounded-xl text-xs transition">
+      Return to Lobby
+    </button>
+  </div>
+
+  <div id="toast-container" class="fixed bottom-20 right-4 z-50 flex flex-col gap-2 max-w-xs pointer-events-none"></div>
+
+  <script>
+    const HOST_SECURITY_KEY = "HOST2026";
+
+    let peer = null;
+    let localMicStream = null;
+    let isHost = false;
+    let myName = "";
+    let myPeerId = null;
+
+    let isHandRaised = false;
+    let isMicAllowedByHost = false;
+    let isStudentMicOn = false;
+
+    let currentPoll = null;
+    let userPollVote = null;
+
+    const connectedPeers = {};  
+    const dataConnections = {}; 
+    const userNames = {};       
+    const micPermissions = {}; 
+    const handRaises = {};     
+    const blockedUsers = new Set();
+
+    setInterval(() => {
+      document.getElementById('clock').innerText = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }, 1000);
+
+    function showToast(msg, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `p-3 rounded-xl border text-xs shadow-xl backdrop-blur transition-all duration-300 pointer-events-auto flex items-center justify-between gap-3 ${
+        type === 'error' ? 'bg-red-900/90 border-red-700 text-white' :
+        type === 'success' ? 'bg-emerald-900/90 border-emerald-700 text-white' :
+        'bg-[#202126] border-[#2c2d33] text-gray-200'
+      }`;
+      toast.innerHTML = `<span>${msg}</span><button onclick="this.parentElement.remove()" class="text-xs opacity-60 hover:opacity-100">✕</button>`;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 4000);
     }
 
-    async function loadData() {
-        try {
-            const res = await fetch("result.json?t=" + Date.now());
-            const data = await res.json();
-            
-            const realTodayDate = getTodayString();
-            const isSunday = new Date().getDay() === 0;
+    function extractYouTubeId(url) {
+      if (!url) return null;
+      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+      const match = url.match(regExp);
+      return (match && match[2].length === 11) ? match[2] : url.trim();
+    }
 
-            // UI Elements
-            let displayFR = "--";
-            let displaySR = "--";
-            let displayCommon = isSunday ? "📌 Sunday: Holiday" : "🎯 Coming Soon...";
-            let historyArray = data.history ? [...data.history] : [];
+    function generateCode() {
+      return Math.floor(100000 + Math.random() * 900000).toString();
+    }
 
-            // Logic to check if JSON matches Today
-            const jsonDate = data.today.date || "";
+    function copyRoomCode() {
+      navigator.clipboard.writeText(document.getElementById('active-room-id').innerText);
+      showToast('Classroom code copied!', 'success');
+    }
 
-            if (jsonDate === realTodayDate) {
-                // If JSON is updated for today
-                displayFR = data.today.FR;
-                displaySR = data.today.SR;
-                displayCommon = data.today.common;
-            } else if (jsonDate !== "" && data.today.FR !== "--") {
-                // If it's a new day, add OLD results from today section to history top
-                const alreadyInHistory = historyArray.some(item => item.date === jsonDate);
-                if (!alreadyInHistory) {
-                    historyArray.unshift({
-                        date: jsonDate,
-                        fr: data.today.FR,
-                        sr: data.today.SR
-                    });
-                }
-            }
+    function getValidName() {
+      const nameInput = document.getElementById('user-display-name').value.trim();
+      if (!nameInput) {
+        showToast('Please enter your full name first!', 'error');
+        return null;
+      }
+      return nameInput;
+    }
 
-            // Update UI
-            document.getElementById("todayDate").innerText = realTodayDate;
-            document.getElementById("fr").innerText = displayFR;
-            document.getElementById("sr").innerText = displaySR;
-            document.getElementById("commonNums").innerText = displayCommon;
-            document.title = `Shillong Teer Result Today - ${realTodayDate}`;
+    function toggleFullScreenStage() {
+      const stage = document.getElementById('stage-wrapper');
+      if (!document.fullscreenElement) {
+        stage.requestFullscreen().catch(() => showToast('Fullscreen mode blocked', 'error'));
+      } else {
+        document.exitFullscreen();
+      }
+    }
 
-            // Render 7 Days History
-            let historyHTML = "";
-            historyArray.slice(0, 7).forEach(row => {
-                if(row.date) {
-                    historyHTML += `<tr>
-                        <td>${row.date}</td>
-                        <td style="color:var(--fr-color)">${row.fr}</td>
-                        <td style="color:var(--sr-color)">${row.sr}</td>
-                    </tr>`;
-                }
-            });
-            document.getElementById("historyBody").innerHTML = historyHTML;
+    function transitionToStage() {
+      document.getElementById('lobby-card').classList.add('hidden');
+      document.getElementById('top-bar').classList.remove('hidden');
+      document.getElementById('top-bar').classList.add('flex');
+      document.getElementById('room-stage').classList.remove('hidden');
+      document.getElementById('controls').classList.remove('hidden');
+      document.getElementById('controls').classList.add('flex');
 
-            document.getElementById("status").innerText = "Last Updated: " + new Date().toLocaleTimeString();
+      if (isHost) {
+        document.getElementById('role-badge').innerText = 'Teacher (Host)';
+        document.getElementById('role-badge').className = "ml-1 text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+        document.getElementById('host-poll-creator').classList.remove('hidden');
+      } else {
+        document.getElementById('role-badge').innerText = 'Student';
+      }
+    }
 
-        } catch (e) {
-            document.getElementById("status").innerText = "Connection Issue";
-            console.error(e);
+    function setupYouTubeEmbed(videoId) {
+      const player = document.getElementById('yt-player');
+      player.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=0&modestbranding=1&rel=0&disablekb=1&showinfo=0&fs=0`;
+    }
+
+    /* HOST ROOM CREATION */
+    function createRoom() {
+      myName = getValidName();
+      if (!myName) return;
+
+      const enteredPin = document.getElementById('host-secret-pin').value.trim();
+      if (enteredPin !== HOST_SECURITY_KEY) {
+        return showToast('Invalid Host Security Pin!', 'error');
+      }
+
+      const rawYtUrl = document.getElementById('yt-stream-url').value.trim();
+      const videoId = extractYouTubeId(rawYtUrl);
+      if (!videoId) {
+        return showToast('Please enter a valid YouTube Video Link or ID!', 'error');
+      }
+
+      isHost = true;
+      const roomCode = generateCode();
+      transitionToStage();
+      setupYouTubeEmbed(videoId);
+
+      peer = new Peer(roomCode, {
+        config: { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] }
+      });
+
+      peer.on('open', (id) => {
+        myPeerId = id;
+        document.getElementById('active-room-id').innerText = id;
+        document.getElementById('dock-room-code').innerText = id;
+        updateParticipantListUI();
+        showToast('Classroom Live Session Started!', 'success');
+      });
+
+      peer.on('connection', (conn) => {
+        if (blockedUsers.has(conn.peer)) {
+          conn.send({ type: 'kicked' });
+          setTimeout(() => conn.close(), 500);
+          return;
         }
+
+        dataConnections[conn.peer] = conn;
+
+        conn.on('data', (data) => {
+          handleIncomingHostData(conn, data, videoId);
+        });
+
+        conn.on('close', () => {
+          const name = userNames[conn.peer] || 'A student';
+          delete dataConnections[conn.peer];
+          delete userNames[conn.peer];
+          delete micPermissions[conn.peer];
+          delete handRaises[conn.peer];
+          updateParticipantListUI();
+          broadcastUserList();
+          appendChatMessage('System', `${name} left the classroom.`, false);
+        });
+      });
     }
 
-    function checkLiveStatus() {
-        const now = new Date();
-        const h = now.getHours();
-        const m = now.getMinutes();
-        const container = document.getElementById('video-container');
-        let isLiveSlot = (h === 16 && m < 30) || (h === 17 && m < 30);
+    function handleIncomingHostData(conn, data, videoId) {
+      if (data.type === 'register-user') {
+        userNames[conn.peer] = data.name;
+        conn.send({ type: 'init-yt-stream', videoId: videoId });
+        updateParticipantListUI();
+        broadcastUserList();
+        appendChatMessage('System', `${data.name} joined the classroom.`, false);
+      }
 
-        if (isLiveSlot) {
-            if (!document.getElementById('youtube-player')) {
-                container.innerHTML = `<iframe id="youtube-player" width="100%" height="100%" src="https://www.youtube.com/embed/live_stream?channel=UC4_rK2gO-UaV-l7Iid7vV9A&autoplay=1&mute=1" frameborder="0" allowfullscreen></iframe>`;
-            }
+      if (data.type === 'chat') {
+        broadcastData(data);
+        appendChatMessage(data.sender, data.message, false, conn.peer, data.msgId);
+      }
+
+      if (data.type === 'hand-raise') {
+        handRaises[conn.peer] = data.state;
+        updateParticipantListUI();
+      }
+
+      if (data.type === 'poll-vote') {
+        if (currentPoll && currentPoll.votes[data.optionIndex] !== undefined) {
+          currentPoll.votes[data.optionIndex]++;
+          broadcastData({ type: 'poll-update', poll: currentPoll });
+          renderPollUI();
+        }
+      }
+    }
+
+    /* STUDENT JOIN ROOM */
+    function joinRoom() {
+      myName = getValidName();
+      if (!myName) return;
+
+      const roomCode = document.getElementById('room-input').value.trim();
+      if (roomCode.length !== 6) return showToast('Enter valid 6-digit classroom code', 'error');
+
+      isHost = false;
+      transitionToStage();
+
+      document.getElementById('active-room-id').innerText = roomCode;
+      document.getElementById('dock-room-code').innerText = roomCode;
+
+      peer = new Peer({
+        config: { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] }
+      });
+
+      peer.on('open', (id) => {
+        myPeerId = id;
+        const hostConn = peer.connect(roomCode);
+        dataConnections[roomCode] = hostConn;
+
+        hostConn.on('open', () => {
+          hostConn.send({ type: 'register-user', name: myName });
+          showToast('Connected to classroom!', 'success');
+        });
+
+        hostConn.on('data', (data) => {
+          handleIncomingStudentData(data);
+        });
+
+        hostConn.on('close', () => {
+          triggerClassEnded();
+        });
+      });
+
+      peer.on('call', (call) => {
+        call.answer(); 
+        call.on('stream', (remoteAudioStream) => {
+          const audio = new Audio();
+          audio.srcObject = remoteAudioStream;
+          audio.play();
+        });
+      });
+    }
+
+    function handleIncomingStudentData(data) {
+      if (data.type === 'init-yt-stream') setupYouTubeEmbed(data.videoId);
+      if (data.type === 'user-list') {
+        Object.assign(userNames, data.users);
+        updateParticipantListUI(data.totalCount);
+      }
+      if (data.type === 'chat') appendChatMessage(data.sender, data.message, false, null, data.msgId);
+      if (data.type === 'pin-chat') displayPinnedMessage(data.message);
+      if (data.type === 'unpin-chat') hidePinnedMessage();
+      
+      if (data.type === 'allow-mic-toggle') {
+        isMicAllowedByHost = data.allowed;
+        if (isMicAllowedByHost) {
+          document.getElementById('mic-allowed-modal').classList.remove('hidden');
         } else {
-            container.innerHTML = `<div id="live-soon-msg">🔴 LIVE STREAM SOON <br> (4:00 PM & 5:00 PM)</div>`;
+          disableStudentMicNow();
+          showToast('The host muted your microphone.', 'error');
         }
+      }
+
+      if (data.type === 'poll-update') {
+        currentPoll = data.poll;
+        renderPollUI();
+      }
+
+      if (data.type === 'poll-delete') {
+        currentPoll = null;
+        userPollVote = null;
+        renderPollUI();
+      }
+
+      if (data.type === 'kicked') {
+        showToast('You have been removed from the class by the host.', 'error');
+        setTimeout(() => location.reload(), 1500);
+      }
+
+      if (data.type === 'host-ended') {
+        triggerClassEnded();
+      }
     }
 
-    // Init
-    loadData();
-    checkLiveStatus();
-    setInterval(loadData, 30000); 
-    setInterval(checkLiveStatus, 60000);
-</script>
+    function broadcastData(data) {
+      Object.values(dataConnections).forEach(conn => conn.send(data));
+    }
+
+    function broadcastUserList() {
+      const fullMap = { ...userNames };
+      if (peer) fullMap[peer.id] = `${myName} (Teacher)`;
+      const totalCount = Object.keys(dataConnections).length + 1;
+
+      broadcastData({ type: 'user-list', users: fullMap, totalCount: totalCount });
+    }
+
+    /* PARTICIPANTS UI & HOST CONTROLS */
+    function updateParticipantListUI(remoteTotalCount = null) {
+      const container = document.getElementById('participant-list');
+      const countSpan = document.getElementById('user-count');
+      const notice = document.getElementById('participant-notice');
+
+      if (isHost) {
+        const totalCount = Object.keys(dataConnections).length + 1;
+        countSpan.innerText = totalCount;
+        notice.innerHTML = 'Host Dashboard: Manage mic permissions & block users.';
+
+        container.innerHTML = '';
+
+        // Host Row
+        const hostRow = document.createElement('div');
+        hostRow.className = "bg-[#121316] p-2.5 rounded-xl border border-indigo-500/40 flex items-center justify-between text-xs";
+        hostRow.innerHTML = `
+          <div class="flex items-center gap-2">
+            <span class="material-icons text-indigo-400 text-sm">workspace_premium</span>
+            <span class="font-bold text-white">${myName} (You)</span>
+          </div>
+          <span class="text-[10px] bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded-full font-semibold">Teacher</span>
+        `;
+        container.appendChild(hostRow);
+
+        // Student Rows
+        Object.keys(dataConnections).forEach(id => {
+          const name = userNames[id] || `Student ...${id.substring(0, 4)}`;
+          const micAllowed = !!micPermissions[id];
+          const hasHandRaised = !!handRaises[id];
+
+          const row = document.createElement('div');
+          row.className = "bg-[#121316] p-2.5 rounded-xl border border-[#232429] flex items-center justify-between gap-2 text-xs";
+          row.innerHTML = `
+            <div class="flex items-center gap-1.5 overflow-hidden">
+              ${hasHandRaised ? '<span class="material-icons text-amber-400 text-xs shrink-0 animate-bounce">front_hand</span>' : ''}
+              <span class="text-gray-200 truncate">${name}</span>
+            </div>
+            <div class="flex items-center gap-1 shrink-0">
+              <button onclick="toggleUserMicPermission('${id}')" class="p-1 rounded-lg ${micAllowed ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-[#202126] text-gray-400'} hover:text-white" title="${micAllowed ? 'Mute Mic' : 'Allow Mic'}">
+                <span class="material-icons text-xs">${micAllowed ? 'mic' : 'mic_off'}</span>
+              </button>
+              <button onclick="blockUser('${id}')" class="p-1 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/30" title="Block Student">
+                <span class="material-icons text-xs">block</span>
+              </button>
+            </div>
+          `;
+          container.appendChild(row);
+        });
+
+      } else {
+        const count = remoteTotalCount || (Object.keys(userNames).length || 1);
+        countSpan.innerText = count;
+        notice.innerHTML = 'Classroom Roster';
+        container.innerHTML = `
+          <div class="bg-[#121316] p-3 rounded-xl border border-[#232429] text-center space-y-2">
+            <span class="material-icons text-indigo-400 text-2xl">groups</span>
+            <p class="text-xs text-gray-300 font-medium">${count} Students Attending Live</p>
+          </div>
+        `;
+      }
+    }
+
+    function toggleUserMicPermission(peerId) {
+      if (!isHost) return;
+      micPermissions[peerId] = !micPermissions[peerId];
+      const conn = dataConnections[peerId];
+      if (conn) {
+        conn.send({ type: 'allow-mic-toggle', allowed: micPermissions[peerId] });
+      }
+      updateParticipantListUI();
+      showToast(`${userNames[peerId] || 'Student'} mic access updated.`, 'info');
+    }
+
+    function blockUser(peerId) {
+      if (!isHost) return;
+      blockedUsers.add(peerId);
+      const conn = dataConnections[peerId];
+      if (conn) {
+        conn.send({ type: 'kicked' });
+        setTimeout(() => conn.close(), 300);
+      }
+      delete dataConnections[peerId];
+      delete userNames[peerId];
+      delete micPermissions[peerId];
+      delete handRaises[peerId];
+      updateParticipantListUI();
+      broadcastUserList();
+      showToast('Student blocked and removed from class.', 'error');
+    }
+
+    /* STUDENT MIC & HAND RAISE CONTROLS */
+    function enableStudentMicNow() {
+      document.getElementById('mic-allowed-modal').classList.add('hidden');
+      const btn = document.getElementById('student-mic-btn');
+      btn.disabled = false;
+      btn.classList.remove('opacity-50', 'cursor-not-allowed');
+      toggleStudentMic();
+    }
+
+    async function toggleStudentMic() {
+      if (!isMicAllowedByHost && !isStudentMicOn) return;
+
+      const btn = document.getElementById('student-mic-btn');
+
+      if (!isStudentMicOn) {
+        try {
+          localMicStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          isStudentMicOn = true;
+
+          // Stream mic to Host
+          const hostPeerId = document.getElementById('active-room-id').innerText;
+          const call = peer.call(hostPeerId, localMicStream);
+          connectedPeers[hostPeerId] = call;
+
+          btn.className = "w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-emerald-600 hover:bg-emerald-500 flex items-center justify-center transition shadow-lg";
+          btn.innerHTML = `<span class="material-icons text-white text-base sm:text-lg">mic</span>`;
+          showToast('Your mic is now live!', 'success');
+        } catch (e) {
+          showToast('Microphone access blocked by browser.', 'error');
+        }
+      } else {
+        disableStudentMicNow();
+      }
+    }
+
+    function disableStudentMicNow() {
+      if (localMicStream) {
+        localMicStream.getTracks().forEach(t => t.stop());
+        localMicStream = null;
+      }
+      isStudentMicOn = false;
+      const btn = document.getElementById('student-mic-btn');
+      btn.className = "w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#2c2d33] opacity-50 cursor-not-allowed flex items-center justify-center transition";
+      btn.disabled = !isMicAllowedByHost;
+      if (isMicAllowedByHost) btn.classList.remove('opacity-50', 'cursor-not-allowed');
+      btn.innerHTML = `<span class="material-icons text-white text-base sm:text-lg">mic_off</span>`;
+    }
+
+    function toggleHandRaise() {
+      isHandRaised = !isHandRaised;
+      const btn = document.getElementById('hand-raise-btn');
+      const badge = document.getElementById('hand-raised-badge');
+
+      if (isHandRaised) {
+        btn.classList.add('bg-amber-500', 'text-black');
+        btn.classList.remove('bg-[#202126]', 'text-amber-400');
+        badge.classList.remove('hidden');
+      } else {
+        btn.classList.remove('bg-amber-500', 'text-black');
+        btn.classList.add('bg-[#202126]', 'text-amber-400');
+        badge.classList.add('hidden');
+      }
+
+      if (!isHost && dataConnections[myPeerId || Object.keys(dataConnections)[0]]) {
+        const conn = Object.values(dataConnections)[0];
+        if (conn) conn.send({ type: 'hand-raise', state: isHandRaised });
+      }
+    }
+
+    /* POLL SYSTEM */
+    function publishPoll() {
+      if (!isHost) return;
+      const q = document.getElementById('poll-question').value.trim();
+      const o1 = document.getElementById('poll-opt1').value.trim();
+      const o2 = document.getElementById('poll-opt2').value.trim();
+
+      if (!q || !o1 || !o2) return showToast('Fill all poll fields!', 'error');
+
+      currentPoll = {
+        question: q,
+        options: [o1, o2],
+        votes: [0, 0]
+      };
+
+      document.getElementById('delete-poll-btn').classList.remove('hidden');
+      broadcastData({ type: 'poll-update', poll: currentPoll });
+      renderPollUI();
+      showToast('Poll published to students!', 'success');
+    }
+
+    function deletePoll() {
+      if (!isHost) return;
+      currentPoll = null;
+      document.getElementById('delete-poll-btn').classList.add('hidden');
+      broadcastData({ type: 'poll-delete' });
+      renderPollUI();
+      showToast('Poll deleted.', 'info');
+    }
+
+    function votePoll(index) {
+      if (userPollVote !== null || !currentPoll) return;
+      userPollVote = index;
+      
+      if (isHost) {
+        currentPoll.votes[index]++;
+        broadcastData({ type: 'poll-update', poll: currentPoll });
+        renderPollUI();
+      } else {
+        const conn = Object.values(dataConnections)[0];
+        if (conn) conn.send({ type: 'poll-vote', optionIndex: index });
+        currentPoll.votes[index]++;
+        renderPollUI();
+      }
+    }
+
+    function renderPollUI() {
+      const card = document.getElementById('active-poll-card');
+      if (!currentPoll) {
+        card.innerHTML = `<p class="text-gray-400 text-center italic text-xs">No active poll currently running.</p>`;
+        return;
+      }
+
+      const totalVotes = currentPoll.votes.reduce((a, b) => a + b, 0) || 1;
+
+      let html = `<p class="font-bold text-white text-xs mb-2">${currentPoll.question}</p><div class="space-y-2">`;
+
+      currentPoll.options.forEach((opt, i) => {
+        const count = currentPoll.votes[i];
+        const pct = Math.round((count / totalVotes) * 100);
+        const hasVoted = userPollVote !== null;
+
+        html += `
+          <div class="bg-[#16171b] border border-[#2c2d33] p-2 rounded-xl relative overflow-hidden cursor-pointer ${hasVoted ? 'pointer-events-none' : 'hover:border-indigo-500'}" onclick="votePoll(${i})">
+            <div class="absolute inset-0 bg-indigo-600/20" style="width: ${pct}%"></div>
+            <div class="relative flex justify-between items-center text-xs">
+              <span class="font-medium text-gray-200">${opt}</span>
+              <span class="text-[10px] text-indigo-300 font-bold">${pct}% (${count})</span>
+            </div>
+          </div>
+        `;
+      });
+
+      html += `</div>`;
+      card.innerHTML = html;
+    }
+
+    /* CHAT & PINNING MODERATION */
+    function sendChatMessage(e) {
+      e.preventDefault();
+      const input = document.getElementById('chat-input');
+      const msg = input.value.trim();
+      if (!msg) return;
+
+      const msgId = 'msg_' + Date.now();
+      const senderTag = isHost ? `${myName} (Teacher)` : myName;
+
+      if (isHost) {
+        broadcastData({ type: 'chat', sender: senderTag, message: msg, msgId: msgId });
+      } else {
+        const conn = Object.values(dataConnections)[0];
+        if (conn) conn.send({ type: 'chat', sender: senderTag, message: msg, msgId: msgId });
+      }
+
+      appendChatMessage('You', msg, true, myPeerId, msgId);
+      input.value = '';
+    }
+
+    function appendChatMessage(sender, msg, isMe, peerId = null, msgId = null) {
+      const container = document.getElementById('chat-messages');
+      const div = document.createElement('div');
+
+      if (sender === 'System') {
+        div.className = 'bg-[#202126] p-1.5 rounded-lg text-gray-400 text-[10px] text-center my-1';
+        div.innerText = msg;
+      } else {
+        div.className = `p-2 rounded-xl max-w-[85%] text-xs relative group ${isMe ? 'bg-indigo-600 text-white self-end' : 'bg-[#202126] text-gray-200 border border-[#2c2d33] self-start'}`;
+        
+        let hostControlsHtml = '';
+        if (isHost && !isMe) {
+          hostControlsHtml = `
+            <button onclick="pinMessage('${msg.replace(/'/g, "\\'")}')" class="text-[10px] text-amber-400 hover:underline ml-2">Pin</button>
+          `;
+        }
+
+        div.innerHTML = `
+          <div class="flex justify-between items-center text-[10px] opacity-75 font-bold mb-0.5">
+            <span>${sender}</span>
+            ${hostControlsHtml}
+          </div>
+          <p class="break-words">${msg}</p>
+        `;
+      }
+
+      container.appendChild(div);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function pinMessage(msg) {
+      if (!isHost) return;
+      displayPinnedMessage(msg);
+      broadcastData({ type: 'pin-chat', message: msg });
+    }
+
+    function unpinMessage() {
+      if (!isHost) return;
+      hidePinnedMessage();
+      broadcastData({ type: 'unpin-chat' });
+    }
+
+    function displayPinnedMessage(msg) {
+      const banner = document.getElementById('pinned-banner');
+      document.getElementById('pinned-banner-text').innerText = msg;
+      banner.classList.remove('hidden');
+      if (isHost) document.getElementById('unpin-btn').classList.remove('hidden');
+    }
+
+    function hidePinnedMessage() {
+      document.getElementById('pinned-banner').classList.add('hidden');
+    }
+
+    /* UI PANEL TAB SWITCHING */
+    function toggleSidePanel(defaultTab = 'users') {
+      const panel = document.getElementById('side-panel');
+      if (panel.classList.contains('hidden')) {
+        panel.classList.remove('hidden');
+        switchSideTab(defaultTab);
+      } else {
+        panel.classList.add('hidden');
+      }
+    }
+
+    function switchSideTab(tab) {
+      const usersTab = document.getElementById('users-tab-content');
+      const chatTab = document.getElementById('chat-tab-content');
+      const pollsTab = document.getElementById('polls-tab-content');
+      
+      const usersBtn = document.getElementById('tab-users-btn');
+      const chatBtn = document.getElementById('tab-chat-btn');
+      const pollsBtn = document.getElementById('tab-polls-btn');
+
+      usersTab.classList.add('hidden');
+      chatTab.classList.add('hidden');
+      pollsTab.classList.add('hidden');
+
+      usersBtn.className = "px-2.5 py-1 text-xs rounded-lg text-gray-400 hover:text-white font-medium";
+      chatBtn.className = "px-2.5 py-1 text-xs rounded-lg text-gray-400 hover:text-white font-medium";
+      pollsBtn.className = "px-2.5 py-1 text-xs rounded-lg text-gray-400 hover:text-white font-medium";
+
+      if (tab === 'users') {
+        usersTab.classList.remove('hidden');
+        usersBtn.className = "px-2.5 py-1 text-xs rounded-lg bg-indigo-600 text-white font-medium";
+      } else if (tab === 'chat') {
+        chatTab.classList.remove('hidden');
+        chatBtn.className = "px-2.5 py-1 text-xs rounded-lg bg-indigo-600 text-white font-medium";
+      } else if (tab === 'polls') {
+        pollsTab.classList.remove('hidden');
+        pollsBtn.className = "px-2.5 py-1 text-xs rounded-lg bg-indigo-600 text-white font-medium";
+      }
+    }
+
+    function leaveClassroom() {
+      if (isHost) {
+        broadcastData({ type: 'host-ended' });
+      }
+      location.reload();
+    }
+
+    function triggerClassEnded() {
+      document.getElementById('class-ended-overlay').classList.remove('hidden');
+    }
+
+    /* ANTI-CHEAT DETECT INSPECT MODE GUARD */
+    (function setupAntiCheatGuard() {
+      // Prevent Right Click Context Menu
+      document.addEventListener('contextmenu', e => e.preventDefault());
+
+      // Keyboard Shortcut Interception
+      document.addEventListener('keydown', e => {
+        if (
+          e.key === 'F12' ||
+          (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
+          (e.metaKey && e.altKey && (e.key === 'I' || e.key === 'J' || e.key === 'U')) ||
+          (e.ctrlKey && e.key === 'U')
+        ) {
+          e.preventDefault();
+          triggerAntiCheatViolation();
+        }
+      });
+
+      // Window Outer/Inner Dimension Inspect Threshold Check
+      function checkInspectWindow() {
+        if (isHost) return; 
+        const widthThreshold = window.outerWidth - window.innerWidth > 160;
+        const heightThreshold = window.outerHeight - window.innerHeight > 160;
+        if (widthThreshold || heightThreshold) {
+          triggerAntiCheatViolation();
+        }
+      }
+
+      window.addEventListener('resize', checkInspectWindow);
+
+      function triggerAntiCheatViolation() {
+        if (isHost) return;
+        alert("Security Violation: Developer inspect mode is disabled during live class. You have been removed.");
+        location.reload();
+      }
+    })();
+  </script>
 </body>
 </html>
